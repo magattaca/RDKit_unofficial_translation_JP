@@ -1,0 +1,1086 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ja" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ja" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>「PythonでRDKitを始めよう」日本語版補遺 &mdash; RDKit_unofficial_translation_JP 1.00 ドキュメント</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="訳語対応集" href="terminology_jp.html" />
+    <link rel="prev" title="後方互換性の無い変更" href="Backwards_incompatible_changes_jp.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> RDKit_unofficial_translation_JP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.00
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction_jp.html">このサイトの使い方（日本語版序文）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="An_overview_of_the_RDKit_jp.html">RDKitの概要</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation_jp.html">インストールの仕方</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html">PythonでRDKitを始めよう</a></li>
+<li class="toctree-l1"><a class="reference internal" href="The_RDKit_Book_jp.html">The RDKit Book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RDKit_cookbook_jp.html">RDKitクックブック</a></li>
+<li class="toctree-l1"><a class="reference internal" href="The_RDKit_database_cartridge_jp.html">RDKitデータベースカートリッジ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Backwards_incompatible_changes_jp.html">後方互換性の無い変更</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">「PythonでRDKitを始めよう」日本語版補遺</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-1">注釈: 分子の読み込みと書き込み &gt; 1分子の読み込み</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-2">注釈: 分子の取り扱い方 &gt; 原子、結合をループする</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-3">注釈: 分子の取り扱い方 &gt; 環の情報</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-4">注釈: 分子の取り扱い方 &gt; 分子の修正</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#d">注釈: 分子の取り扱い方 &gt; ３D分子の取り扱い</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-6">注釈: 部分構造探索</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-7">注釈: 部分構造探索 &gt; 部分構造一致検索における立体化学</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#smarts">注釈: 部分構造探索 &gt; SMARTSのアトムマップインデックス</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-9">注釈: 化学変換 &gt; 部分構造ベースの変換</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#murcko">注釈: 化学変換 &gt; Murcko型分解</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-11">注釈: 化学変換 &gt; 最大共通部分構造</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-12">注釈: フィンガープリントの生成と分子の類似性 &gt; トポロジカルフィンガープリント</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-13">注釈: フィンガープリントの生成と分子の類似性 &gt; アトムペアとトポロジカルトーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#morgan-circular">注釈: フィンガープリントの生成と分子の類似性 &gt; Morganフィンガープリント(Circularフィンガープリント)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-15">注釈: フィンガープリントの生成と分子の類似性 &gt; モーガンフィンガープリントの解釈</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-16">注釈: フィンガープリントの生成と分子の類似性 &gt; フィンガープリントのビットのイメージの生成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-17">注釈: フィンガープリントの生成と分子の類似性 &gt; フィンガープリントを使って多種多様な分子を選択する</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-18">注釈: フィンガープリントの生成と分子の類似性 &gt; フィンガープリントを使って類似度マップを生成する</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-19">注釈: 記述子計算</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-20">注釈: 化学反応</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-21">注釈: 化学反応 &gt; より高度な反応機能</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#recap">注釈: 化学反応 &gt; Recapの実装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#brics">注釈: 化学反応 &gt;  BRICSの実装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-24">注釈: 化学反応 &gt; 他のフラグメント化手法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-25">注釈: 化学的特徴とファーマコフォア &gt; 化学的特徴</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-26">注釈: 化学的特徴とファーマコフォア &gt; ２Dファーマコフォアフィンガープリント</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-27">注釈: 分子フラグメント</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jp-notes-28">注釈: 発展的なトピック/警告 &gt; 分子の編集</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="terminology_jp.html">訳語対応集</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">RDKit_unofficial_translation_JP</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>「PythonでRDKitを始めよう」日本語版補遺</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Supplementary_Text_jp.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pythonrdkit">
+<h1>「PythonでRDKitを始めよう」日本語版補遺<a class="headerlink" href="#pythonrdkit" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<p>RDKit online documentation には様々なコード事例が記載されていますが、
+線形表記が多用されていて、SMILESやSMARTSに馴染みがない場合何を行おうとしているかわかりにくい部分があると思います。
+このページでは理解の助けとなることを期待し２次元の構造式での表記を掲載します。
+以下のページの図表の多くは<a class="reference external" href="https://chemaxon.com">ChemAxon社</a> の
+<a class="reference external" href="https://chemaxon.com/products/marvin">MarvinSketch</a> version 18.24.0 を使用して作成しました。
+また、
+SMILES、SMARTSの解釈にあたってそれぞれDaylight社の<a class="reference external" href="http://www.daylight.com/dayhtml_tutorials/languages/smiles/index.html">SMILES</a> 、
+<a class="reference external" href="http://www.daylight.com/dayhtml_tutorials/languages/smarts/index.html">SMARTS</a>のページを参考にしました。</p>
+<div class="section" id="jp-notes-1">
+<span id="id1"></span><h2>注釈: 分子の読み込みと書き込み &gt; 1分子の読み込み<a class="headerlink" href="#jp-notes-1" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-1"><span class="std std-ref">本文</span></a> に戻る</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;Cc1ccccc1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>こちらで読み込まれているSMILES「Cc1ccccc1」はトルエンです。</p>
+<img alt="_images/jp_supple_1.png" src="_images/jp_supple_1.png" />
+<p>エラーメッセージを出すために使われれている構造は：</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m1</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;CO(C)C&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_2.png" src="_images/jp_supple_2.png" />
+<p>および</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;c1cc1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_3.png" src="_images/jp_supple_3.png" />
+<p>以下のコードではSMILESをisomeric SMILESとするかしないかの違いが検証されています。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromMolFile</span><span class="p">(</span><span class="s1">&#39;data/chiral.mol&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="go">&#39;C[C@H](O)c1ccccc1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">isomericSmiles</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="go">&#39;CC(O)c1ccccc1&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_4.png" src="_images/jp_supple_4.png" />
+<p><code class="docutils literal"><span class="pre">isomericSmiles=False</span></code>とすることでキラルについての情報が失われています。</p>
+<p>以下のコードでは複数のSMILESが同一のピリジンを表すことを示し、
+再度SMILESに変換し直すとcanonical SMILESとなっています。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;C1=CC=CN=C1&#39;</span><span class="p">))</span>
+<span class="go">&#39;c1ccncc1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;c1cccnc1&#39;</span><span class="p">))</span>
+<span class="go">&#39;c1ccncc1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;n1ccccc1&#39;</span><span class="p">))</span>
+<span class="go">&#39;c1ccncc1&#39;</span>
+</pre></div>
+</div>
+<p>以下のコードではケクレ形式のSMILESを生成しています。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">Kekulize</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">kekuleSmiles</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">&#39;C[C@H](O)C1=CC=CC=C1&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_6.png" src="_images/jp_supple_6.png" />
+</div>
+<div class="section" id="jp-notes-2">
+<span id="id2"></span><h2>注釈: 分子の取り扱い方 &gt; 原子、結合をループする<a class="headerlink" href="#jp-notes-2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-2"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードではオキシランを生成し、原子番号をprintしています。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;C1OC1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">():</span>
+<span class="gp">... </span>  <span class="nb">print</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetAtomicNum</span><span class="p">())</span>
+<span class="gp">...</span>
+<span class="go">6</span>
+<span class="go">8</span>
+<span class="go">6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">GetBonds</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">GetBondType</span><span class="p">())</span>
+<span class="go">SINGLE</span>
+</pre></div>
+</div>
+<p>このセクションの以降のコードは下の図を参照してください。</p>
+<img alt="_images/jp_supple_7.png" src="_images/jp_supple_7.png" />
+</div>
+<div class="section" id="jp-notes-3">
+<span id="id3"></span><h2>注釈: 分子の取り扱い方 &gt; 環の情報<a class="headerlink" href="#jp-notes-3" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-3"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードでは、原子と結合のもつ分子の環構造についての情報が検証されています：</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;OC1C2C1CC2&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">IsInRing</span><span class="p">()</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">IsInRing</span><span class="p">()</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">IsInRingSize</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">IsInRingSize</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">IsInRingSize</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">GetBondWithIdx</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">IsInRingSize</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">GetBondWithIdx</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">IsInRing</span><span class="p">()</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_8.png" src="_images/jp_supple_8.png" />
+<p>以下のコードでは、先の構造のどれがSSSRに含まれるか検証されています。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ssr</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">GetSymmSSSR</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">ssr</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">ssr</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">[1, 2, 3]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">ssr</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">[4, 5, 2, 3]</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_9.png" src="_images/jp_supple_9.png" />
+</div>
+<div class="section" id="jp-notes-4">
+<span id="id4"></span><h2>注釈: 分子の取り扱い方 &gt; 分子の修正<a class="headerlink" href="#jp-notes-4" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-4"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードでは、結合のケクレ化が検証されています。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;c1ccccc1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">GetBondWithIdx</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">GetBondType</span><span class="p">()</span>
+<span class="go">rdkit.Chem.rdchem.BondType.AROMATIC</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">Kekulize</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">GetBondWithIdx</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">GetBondType</span><span class="p">()</span>
+<span class="go">rdkit.Chem.rdchem.BondType.DOUBLE</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">GetBondWithIdx</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">GetBondType</span><span class="p">()</span>
+<span class="go">rdkit.Chem.rdchem.BondType.SINGLE</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_10.png" src="_images/jp_supple_10.png" />
+</div>
+<div class="section" id="d">
+<span id="jp-notes-5"></span><h2>注釈: 分子の取り扱い方 &gt; ３D分子の取り扱い<a class="headerlink" href="#d" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-5"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードでは、コンフォマーの生成についてデフォルト（ETKDG）とMMFF94とが比較されています。</p>
+<p>デフォルト（ETKDG):</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span><span class="o">=</span><span class="n">Chem</span><span class="o">.</span><span class="n">AddHs</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">AllChem</span><span class="o">.</span><span class="n">EmbedMolecule</span><span class="p">(</span><span class="n">m2</span><span class="p">)</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p>MMFF94:</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;C1CCC1OC&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span><span class="o">=</span><span class="n">Chem</span><span class="o">.</span><span class="n">AddHs</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">AllChem</span><span class="o">.</span><span class="n">EmbedMolecule</span><span class="p">(</span><span class="n">m2</span><span class="p">)</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">AllChem</span><span class="o">.</span><span class="n">MMFFOptimizeMolecule</span><span class="p">(</span><span class="n">m2</span><span class="p">)</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_11.png" src="_images/jp_supple_11.png" />
+</div>
+<div class="section" id="jp-notes-6">
+<span id="id5"></span><h2>注釈: 部分構造探索<a class="headerlink" href="#jp-notes-6" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-6"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードで行われている、部分構造探索の構造を示します。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;c1ccccc1O&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">patt</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmarts</span><span class="p">(</span><span class="s1">&#39;ccO&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">HasSubstructMatch</span><span class="p">(</span><span class="n">patt</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">GetSubstructMatch</span><span class="p">(</span><span class="n">patt</span><span class="p">)</span>
+<span class="go">(0, 5, 6)</span>
+</pre></div>
+</div>
+<p>一致した組み合わせを全て取得</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">GetSubstructMatches</span><span class="p">(</span><span class="n">patt</span><span class="p">)</span>
+<span class="go">((0, 5, 6), (4, 5, 6))</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_12.png" src="_images/jp_supple_12.png" />
+<p>以下のコードで行われている、部分構造探索の構造を示します。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;C1=CC=CC=C1OC&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">HasSubstructMatch</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmarts</span><span class="p">(</span><span class="s1">&#39;CO&#39;</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">HasSubstructMatch</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;CO&#39;</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_13.png" src="_images/jp_supple_13.png" />
+</div>
+<div class="section" id="jp-notes-7">
+<span id="id6"></span><h2>注釈: 部分構造探索 &gt; 部分構造一致検索における立体化学<a class="headerlink" href="#jp-notes-7" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-7"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードで行われている、部分構造探索の構造を示します。
+デフォルトでは部分構造検索で立体化学に関する情報は使われません：</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;CC[C@H](F)Cl&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">HasSubstructMatch</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;C[C@H](F)Cl&#39;</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">HasSubstructMatch</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;C[C@@H](F)Cl&#39;</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">HasSubstructMatch</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;CC(F)Cl&#39;</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_14.png" src="_images/jp_supple_14.png" />
+</div>
+<div class="section" id="smarts">
+<span id="jp-notes-8"></span><h2>注釈: 部分構造探索 &gt; SMARTSのアトムマップインデックス<a class="headerlink" href="#smarts" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-8"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードでは、SMARTSパターンを用いた部分構造検索が行われています。
+SMRATSの解釈ならびに検索結果を図示します。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qmol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmarts</span><span class="p">(</span> <span class="s1">&#39;[cH0:1][c:2]([cH0])!@[CX3!r:3]=[NX2!r:4]&#39;</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ind_map</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">qmol</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">()</span> <span class="p">:</span>
+<span class="gp">... </span>    <span class="n">map_num</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">GetAtomMapNum</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">map_num</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="n">ind_map</span><span class="p">[</span><span class="n">map_num</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">GetIdx</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ind_map</span>
+<span class="go">{0: 0, 1: 1, 2: 3, 3: 4}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">map_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">ind_map</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ind_map</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">map_list</span>
+<span class="go">[0, 1, 3, 4]</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_15.png" src="_images/jp_supple_15.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;Cc1cccc(C)c1C(C)=NC&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetSubstructMatches</span><span class="p">(</span> <span class="n">qmol</span> <span class="p">)</span> <span class="p">:</span>
+<span class="gp">... </span>    <span class="n">mas</span> <span class="o">=</span> <span class="p">[</span><span class="n">match</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">map_list</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">mas</span><span class="p">)</span>
+<span class="go">[1, 7, 8, 10]</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_16.png" src="_images/jp_supple_16.png" />
+</div>
+<div class="section" id="jp-notes-9">
+<span id="id7"></span><h2>注釈: 化学変換 &gt; 部分構造ベースの変換<a class="headerlink" href="#jp-notes-9" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-9"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードでは、部分構造の削除が行われています：</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;CC(=O)O&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">patt</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmarts</span><span class="p">(</span><span class="s1">&#39;C(=O)[OH]&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rm</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">DeleteSubstructs</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">patt</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">rm</span><span class="p">)</span>
+<span class="go">&#39;C&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_17.png" src="_images/jp_supple_17.png" />
+<p>以下のコードでは、部分構造の置換が行われています：</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">repl</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;OC&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">patt</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmarts</span><span class="p">(</span><span class="s1">&#39;[$(NC(=O))]&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;CC(=O)N&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rms</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ReplaceSubstructs</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">patt</span><span class="p">,</span><span class="n">repl</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rms</span>
+<span class="go">(&lt;rdkit.Chem.rdchem.Mol object at 0x...&gt;,)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">rms</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;COC(C)=O&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_18.png" src="_images/jp_supple_18.png" />
+<p>以下のコードでは、側鎖を取り除く処理が行われています：</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m1</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;BrCCc1cncnc1C(=O)O&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">core</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;c1cncnc1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tmp</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">ReplaceSidechains</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span><span class="n">core</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+<span class="go">&#39;[1*]c1cncnc1[2*]&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_19.png" src="_images/jp_supple_19.png" />
+<p>以下のコードでは、骨格の削除処理が行われています：</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tmp</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">ReplaceCore</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span><span class="n">core</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+<span class="go">&#39;[1*]CCBr.[2*]C(=O)O&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_20.png" src="_images/jp_supple_20.png" />
+<p>以下のコードでは、ラベル付けが行われています：</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m1</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;c1c(CCO)ncnc1C(=O)O&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tmp</span><span class="o">=</span><span class="n">Chem</span><span class="o">.</span><span class="n">ReplaceCore</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span><span class="n">core</span><span class="p">,</span><span class="n">labelByIndex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+<span class="go">&#39;[1*]CCO.[5*]C(=O)O&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_21.png" src="_images/jp_supple_21.png" />
+<p>以下のコードでは、 分子の分割が行われています：</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rs</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">GetMolFrags</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span><span class="n">asMols</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">rs</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">rs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;[1*]CCO&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">rs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">&#39;[5*]C(=O)O&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_22.png" src="_images/jp_supple_22.png" />
+</div>
+<div class="section" id="murcko">
+<span id="jp-notes-10"></span><h2>注釈: 化学変換 &gt; Murcko型分解<a class="headerlink" href="#murcko" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-10"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードでは、BemisとMurckoにより定義されたMurcko骨格(Murcko scaffold)に基づき、
+分子のフラグメントへの分割と、骨格の取り出しを行なっています。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit.Chem.Scaffolds</span> <span class="k">import</span> <span class="n">MurckoScaffold</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cdk2mols</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">SDMolSupplier</span><span class="p">(</span><span class="s1">&#39;data/cdk2.sdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m1</span> <span class="o">=</span> <span class="n">cdk2mols</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">core</span> <span class="o">=</span> <span class="n">MurckoScaffold</span><span class="o">.</span><span class="n">GetScaffoldForMol</span><span class="p">(</span><span class="n">m1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">core</span><span class="p">)</span>
+<span class="go">&#39;c1ncc2nc[nH]c2n1&#39;</span>
+</pre></div>
+</div>
+<p>より一般化した骨格として抽出:</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fw</span> <span class="o">=</span> <span class="n">MurckoScaffold</span><span class="o">.</span><span class="n">MakeScaffoldGeneric</span><span class="p">(</span><span class="n">core</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">fw</span><span class="p">)</span>
+<span class="go">&#39;C1CCC2CCCC2C1&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_23.png" src="_images/jp_supple_23.png" />
+</div>
+<div class="section" id="jp-notes-11">
+<span id="id8"></span><h2>注釈: 化学変換 &gt; 最大共通部分構造<a class="headerlink" href="#jp-notes-11" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-11"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードでは、最大共通部分構造（MCS）を見つけ出しています。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="k">import</span> <span class="n">rdFMCS</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mol1</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;O=C(NCc1cc(OC)c(O)cc1)CCCC/C=C/C(C)C&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mol2</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CC(C)CCCCCC(=O)NCC1=CC(=C(C=C1)O)OC&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mol3</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;c1(C=O)cc(OC)c(O)cc1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mols</span> <span class="o">=</span> <span class="p">[</span><span class="n">mol1</span><span class="p">,</span><span class="n">mol2</span><span class="p">,</span><span class="n">mol3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span><span class="o">=</span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">FindMCS</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span>
+<span class="go">&lt;rdkit.Chem.rdFMCS.MCSResult object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span><span class="o">.</span><span class="n">numAtoms</span>
+<span class="go">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span><span class="o">.</span><span class="n">numBonds</span>
+<span class="go">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span><span class="o">.</span><span class="n">smartsString</span>
+<span class="go">&#39;[#6]1(-[#6]):[#6]:[#6](-[#8]-[#6]):[#6](:[#6]:[#6]:1)-[#8]&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span><span class="o">.</span><span class="n">canceled</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_24.png" src="_images/jp_supple_24.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mols</span> <span class="o">=</span> <span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;NCC&#39;</span><span class="p">),</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;OC=C&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">FindMCS</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span><span class="o">.</span><span class="n">smartsString</span>
+<span class="go">&#39;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">FindMCS</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">atomCompare</span><span class="o">=</span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">AtomCompare</span><span class="o">.</span><span class="n">CompareAny</span><span class="p">)</span><span class="o">.</span><span class="n">smartsString</span>
+<span class="go">&#39;[#7,#8]-[#6]&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">FindMCS</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">bondCompare</span><span class="o">=</span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">BondCompare</span><span class="o">.</span><span class="n">CompareAny</span><span class="p">)</span><span class="o">.</span><span class="n">smartsString</span>
+<span class="go">&#39;[#6]-,=[#6]&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_25.png" src="_images/jp_supple_25.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mols</span> <span class="o">=</span> <span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;c1ccccc1&#39;</span><span class="p">),</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;C1CCCC=C1&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">FindMCS</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span><span class="n">bondCompare</span><span class="o">=</span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">BondCompare</span><span class="o">.</span><span class="n">CompareAny</span><span class="p">)</span><span class="o">.</span><span class="n">smartsString</span>
+<span class="go">&#39;[#6]1:,-[#6]:,-[#6]:,-[#6]:,-[#6]:,=[#6]:,-1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">FindMCS</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span><span class="n">bondCompare</span><span class="o">=</span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">BondCompare</span><span class="o">.</span><span class="n">CompareOrderExact</span><span class="p">)</span><span class="o">.</span><span class="n">smartsString</span>
+<span class="go">&#39;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">FindMCS</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span><span class="n">bondCompare</span><span class="o">=</span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">BondCompare</span><span class="o">.</span><span class="n">CompareOrder</span><span class="p">)</span><span class="o">.</span><span class="n">smartsString</span>
+<span class="go">&#39;[#6](:,-[#6]:,-[#6]:,-[#6]):,-[#6]:,-[#6]&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_26.png" src="_images/jp_supple_26.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mols</span> <span class="o">=</span> <span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;NC1OC1&#39;</span><span class="p">),</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;C1OC1[N+](=O)[O-]&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">FindMCS</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span><span class="o">.</span><span class="n">numAtoms</span>
+<span class="go">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">FindMCS</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">matchValences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">numBonds</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_27.png" src="_images/jp_supple_27.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mols</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;C1CCC1CCC&quot;</span><span class="p">),</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;C1CCCCCC1&quot;</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">FindMCS</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span><span class="o">.</span><span class="n">smartsString</span>
+<span class="go">&#39;[#6](-[#6]-[#6])-[#6]-[#6]-[#6]-[#6]&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">FindMCS</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">ringMatchesRingOnly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">smartsString</span>
+<span class="go">&#39;[#6](-[#6]-[#6])-[#6]&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_28.png" src="_images/jp_supple_28.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mols</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CCC1CC2C1CN2&quot;</span><span class="p">),</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;C1CC2C1CC2&quot;</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">FindMCS</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span><span class="o">.</span><span class="n">smartsString</span>
+<span class="go">&#39;[#6]1-[#6]-[#6](-[#6]-1-[#6])-[#6]&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">FindMCS</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">ringMatchesRingOnly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">smartsString</span>
+<span class="go">&#39;[#6](-[#6]-[#6]-[#6]-[#6])-[#6]&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rdFMCS</span><span class="o">.</span><span class="n">FindMCS</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">completeRingsOnly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">smartsString</span>
+<span class="go">&#39;[#6]1-[#6]-[#6]-[#6]-1&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_29.png" src="_images/jp_supple_29.png" />
+</div>
+<div class="section" id="jp-notes-12">
+<span id="id9"></span><h2>注釈: フィンガープリントの生成と分子の類似性 &gt; トポロジカルフィンガープリント<a class="headerlink" href="#jp-notes-12" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-12"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードで使われているSMILESを構造式に起こします。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit</span> <span class="k">import</span> <span class="n">DataStructs</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit.Chem.Fingerprints</span> <span class="k">import</span> <span class="n">FingerprintMols</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ms</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;CCOC&#39;</span><span class="p">),</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;CCO&#39;</span><span class="p">),</span>
+<span class="gp">... </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;COC&#39;</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fps</span> <span class="o">=</span> <span class="p">[</span><span class="n">FingerprintMols</span><span class="o">.</span><span class="n">FingerprintMol</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ms</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DataStructs</span><span class="o">.</span><span class="n">FingerprintSimilarity</span><span class="p">(</span><span class="n">fps</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">fps</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">0.6...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DataStructs</span><span class="o">.</span><span class="n">FingerprintSimilarity</span><span class="p">(</span><span class="n">fps</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">fps</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="go">0.4...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DataStructs</span><span class="o">.</span><span class="n">FingerprintSimilarity</span><span class="p">(</span><span class="n">fps</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">fps</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="go">0.25</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_30.png" src="_images/jp_supple_30.png" />
+</div>
+<div class="section" id="jp-notes-13">
+<span id="id10"></span><h2>注釈: フィンガープリントの生成と分子の類似性 &gt; アトムペアとトポロジカルトーション<a class="headerlink" href="#jp-notes-13" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-13"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードで使われているSMILESを構造式に起こします。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit.Chem.AtomPairs</span> <span class="k">import</span> <span class="n">Pairs</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ms</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;C1CCC1OCC&#39;</span><span class="p">),</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;CC(C)OCC&#39;</span><span class="p">),</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;CCOCC&#39;</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pairFps</span> <span class="o">=</span> <span class="p">[</span><span class="n">Pairs</span><span class="o">.</span><span class="n">GetAtomPairFingerprint</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ms</span><span class="p">]</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_31.png" src="_images/jp_supple_31.png" />
+</div>
+<div class="section" id="morgan-circular">
+<span id="jp-notes-14"></span><h2>注釈: フィンガープリントの生成と分子の類似性 &gt; Morganフィンガープリント(Circularフィンガープリント)<a class="headerlink" href="#morgan-circular" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-14"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードで使われているSMILESを構造式に起こします。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="k">import</span> <span class="n">AllChem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m1</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;Cc1ccccc1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp1</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">GetMorganFingerprint</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp1</span>
+<span class="go">&lt;rdkit.DataStructs.cDataStructs.UIntSparseIntVect object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;Cc1ncccc1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp2</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">GetMorganFingerprint</span><span class="p">(</span><span class="n">m2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DataStructs</span><span class="o">.</span><span class="n">DiceSimilarity</span><span class="p">(</span><span class="n">fp1</span><span class="p">,</span><span class="n">fp2</span><span class="p">)</span>
+<span class="go">0.55...</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_32.png" src="_images/jp_supple_32.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m1</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;c1ccccn1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;c1ccco1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp1</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">GetMorganFingerprint</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp2</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">GetMorganFingerprint</span><span class="p">(</span><span class="n">m2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ffp1</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">GetMorganFingerprint</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">useFeatures</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ffp2</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">GetMorganFingerprint</span><span class="p">(</span><span class="n">m2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">useFeatures</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DataStructs</span><span class="o">.</span><span class="n">DiceSimilarity</span><span class="p">(</span><span class="n">fp1</span><span class="p">,</span><span class="n">fp2</span><span class="p">)</span>
+<span class="go">0.36...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DataStructs</span><span class="o">.</span><span class="n">DiceSimilarity</span><span class="p">(</span><span class="n">ffp1</span><span class="p">,</span><span class="n">ffp2</span><span class="p">)</span>
+<span class="go">0.90...</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_33.png" src="_images/jp_supple_33.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m1</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;Cc1ccccc1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;Cc1ncncn1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp1</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">GetMorganFingerprint</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">invariants</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">m1</span><span class="o">.</span><span class="n">GetNumAtoms</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp2</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">GetMorganFingerprint</span><span class="p">(</span><span class="n">m2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">invariants</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">m2</span><span class="o">.</span><span class="n">GetNumAtoms</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp1</span><span class="o">==</span><span class="n">fp2</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_34.png" src="_images/jp_supple_34.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m3</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;CC1CCCCC1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp3</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">GetMorganFingerprint</span><span class="p">(</span><span class="n">m3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">invariants</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">m3</span><span class="o">.</span><span class="n">GetNumAtoms</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp1</span><span class="o">==</span><span class="n">fp3</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_35.png" src="_images/jp_supple_35.png" />
+</div>
+<div class="section" id="jp-notes-15">
+<span id="id11"></span><h2>注釈: フィンガープリントの生成と分子の類似性 &gt; モーガンフィンガープリントの解釈<a class="headerlink" href="#jp-notes-15" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-15"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードで使われているSMILESを構造式に起こします。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;c1cccnc1C&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">info</span><span class="o">=</span><span class="p">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">GetMorganFingerprint</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">bitInfo</span><span class="o">=</span><span class="n">info</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">GetNonzeroElements</span><span class="p">())</span>
+<span class="go">16</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+<span class="go">16</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">info</span><span class="p">[</span><span class="mi">98513984</span><span class="p">]</span>
+<span class="go">((1, 1), (2, 1))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">info</span><span class="p">[</span><span class="mi">4048591891</span><span class="p">]</span>
+<span class="go">((5, 2),)</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_36.png" src="_images/jp_supple_36.png" />
+<p>このセクションで出てくる以降のSMILESは全て同じ部分構造を意味します。</p>
+<img alt="_images/jp_supple_37.png" src="_images/jp_supple_37.png" />
+</div>
+<div class="section" id="jp-notes-16">
+<span id="id12"></span><h2>注釈: フィンガープリントの生成と分子の類似性 &gt; フィンガープリントのビットのイメージの生成<a class="headerlink" href="#jp-notes-16" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-16"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードで使われているSMILESを構造式に起こします。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="k">import</span> <span class="n">Draw</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;c1ccccc1CC1CC1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bi</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">GetMorganFingerprintAsBitVect</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bitInfo</span><span class="o">=</span><span class="n">bi</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bi</span><span class="p">[</span><span class="mi">872</span><span class="p">]</span>
+<span class="go">((6, 2),)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mfp2_svg</span> <span class="o">=</span> <span class="n">Draw</span><span class="o">.</span><span class="n">DrawMorganBit</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="mi">872</span><span class="p">,</span> <span class="n">bi</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rdkbi</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rdkfp</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">RDKFingerprint</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">maxPath</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">bitInfo</span><span class="o">=</span><span class="n">rdkbi</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rdkbi</span><span class="p">[</span><span class="mi">1553</span><span class="p">]</span>
+<span class="go">[[0, 1, 9, 5, 4], [2, 3, 4, 9, 5]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rdk_svg</span> <span class="o">=</span> <span class="n">Draw</span><span class="o">.</span><span class="n">DrawRDKitBit</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="mi">1553</span><span class="p">,</span> <span class="n">rdkbi</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_38.png" src="_images/jp_supple_38.png" />
+</div>
+<div class="section" id="jp-notes-17">
+<span id="id13"></span><h2>注釈: フィンガープリントの生成と分子の類似性 &gt; フィンガープリントを使って多種多様な分子を選択する<a class="headerlink" href="#jp-notes-17" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-17"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>このセクションで取り出された10個の分子のセットを図示します。</p>
+<img alt="_images/jp_supple_39.png" src="_images/jp_supple_39.png" />
+</div>
+<div class="section" id="jp-notes-18">
+<span id="id14"></span><h2>注釈: フィンガープリントの生成と分子の類似性 &gt; フィンガープリントを使って類似度マップを生成する<a class="headerlink" href="#jp-notes-18" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-18"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードで使われているSMILESを構造式に起こします。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit</span> <span class="k">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;COc1cccc2cc(C(=O)NCCCCN3CCN(c4cccc5nccnc54)CC3)oc21&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">refmol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;CCCN(CCCCN1CCN(c2ccccc2OC)CC1)Cc1ccc2ccccc2c1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_40.png" src="_images/jp_supple_40.png" />
+</div>
+<div class="section" id="jp-notes-19">
+<span id="id15"></span><h2>注釈: 記述子計算<a class="headerlink" href="#jp-notes-19" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-19"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードで使われているSMILESを構造式に起こします。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="k">import</span> <span class="n">Descriptors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;c1ccccc1C(=O)O&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Descriptors</span><span class="o">.</span><span class="n">TPSA</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="go">37.3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Descriptors</span><span class="o">.</span><span class="n">MolLogP</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="go">1.3848</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_41.png" src="_images/jp_supple_41.png" />
+</div>
+<div class="section" id="jp-notes-20">
+<span id="id16"></span><h2>注釈: 化学反応<a class="headerlink" href="#jp-notes-20" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-20"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードで行われている反応を構造式に起こします。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rxn</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ReactionFromSmarts</span><span class="p">(</span><span class="s1">&#39;[C:1](=[O:2])-[OD1].[N!H0:3]&gt;&gt;[C:1](=[O:2])[N:3]&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rxn</span>
+<span class="go">&lt;rdkit.Chem.rdChemReactions.ChemicalReaction object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rxn</span><span class="o">.</span><span class="n">GetNumProductTemplates</span><span class="p">()</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ps</span> <span class="o">=</span> <span class="n">rxn</span><span class="o">.</span><span class="n">RunReactants</span><span class="p">((</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;CC(=O)O&#39;</span><span class="p">),</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;NC&#39;</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">ps</span><span class="p">)</span> <span class="c1"># ありうる生成物の各セットに対し一つのエントリーとなる</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">ps</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># 各エントリーは各生成物の一つの分子を含む</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">ps</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;CNC(C)=O&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ps</span> <span class="o">=</span> <span class="n">rxn</span><span class="o">.</span><span class="n">RunReactants</span><span class="p">((</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;C(COC(=O)O)C(=O)O&#39;</span><span class="p">),</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;NC&#39;</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">ps</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">ps</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;CNC(=O)OCCC(=O)O&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">ps</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;CNC(=O)CCOC(=O)O</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_42.png" src="_images/jp_supple_42.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rxn</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ReactionFromSmarts</span><span class="p">(</span><span class="s1">&#39;[C:1]=[C:2].[C:3]=[*:4][*:5]=[C:6]&gt;&gt;[C:1]1[C:2][C:3][*:4]=[*:5][C:6]1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ps</span> <span class="o">=</span> <span class="n">rxn</span><span class="o">.</span><span class="n">RunReactants</span><span class="p">((</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;OC=C&#39;</span><span class="p">),</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;C=CC(N)=C&#39;</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">ps</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;NC1=CCCC(O)C1&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_43.png" src="_images/jp_supple_43.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rxn</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ReactionFromSmarts</span><span class="p">(</span><span class="s1">&#39;[C:1]=[C:2][C:3]=[C:4].[C:5]=[C:6]&gt;&gt;[C:1]1=[C:2][C:3]=[C:4][C:5]=[C:6]1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ps</span> <span class="o">=</span> <span class="n">rxn</span><span class="o">.</span><span class="n">RunReactants</span><span class="p">((</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;C=CC=C&#39;</span><span class="p">),</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;C=C&#39;</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">ps</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;C1=CC=CC=C1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p0</span> <span class="o">=</span> <span class="n">ps</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">SanitizeMol</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span>
+<span class="go">rdkit.Chem.rdmolops.SanitizeFlags.SANITIZE_NONE</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span>
+<span class="go">&#39;c1ccccc1&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_44.png" src="_images/jp_supple_44.png" />
+</div>
+<div class="section" id="jp-notes-21">
+<span id="id17"></span><h2>注釈: 化学反応 &gt; より高度な反応機能<a class="headerlink" href="#jp-notes-21" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-21"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードで行われている反応を構造式に起こします。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rxn</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ReactionFromRxnFile</span><span class="p">(</span><span class="s1">&#39;data/AmideBond.rxn&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">acid</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;CC(=O)O&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;CC(=O)NCCN&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ps</span> <span class="o">=</span> <span class="n">rxn</span><span class="o">.</span><span class="n">RunReactants</span><span class="p">((</span><span class="n">acid</span><span class="p">,</span><span class="n">base</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">ps</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">ps</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;CC(=O)N(CCN)C(C)=O&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">ps</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;CC(=O)NCCNC(C)=O&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_45.png" src="_images/jp_supple_45.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">amidep</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmarts</span><span class="p">(</span><span class="s1">&#39;[N;$(NC=[O,S])]&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">GetSubstructMatches</span><span class="p">(</span><span class="n">amidep</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">base</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">match</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">SetProp</span><span class="p">(</span><span class="s1">&#39;_protected&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_46.png" src="_images/jp_supple_46.png" />
+</div>
+<div class="section" id="recap">
+<span id="jp-notes-22"></span><h2>注釈: 化学反応 &gt; Recapの実装<a class="headerlink" href="#recap" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-22"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードで行われているSMILESを構造式に起こします。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit</span> <span class="k">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="k">import</span> <span class="n">Recap</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;c1ccccc1OCCOC(=O)CC&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hierarch</span> <span class="o">=</span> <span class="n">Recap</span><span class="o">.</span><span class="n">RecapDecompose</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">hierarch</span><span class="p">)</span>
+<span class="go">&lt;class &#39;rdkit.Chem.Recap.RecapHierarchyNode&#39;&gt;</span>
+</pre></div>
+</div>
+<p>階層構造の基点（根：root）は元々の分子です：</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hierarch</span><span class="o">.</span><span class="n">smiles</span>
+<span class="go">&#39;CCC(=O)OCCOc1ccccc1&#39;</span>
+</pre></div>
+</div>
+<p>子ノードの情報</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ks</span><span class="o">=</span><span class="n">hierarch</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">ks</span><span class="p">)</span>
+<span class="go">[&#39;*C(=O)CC&#39;, &#39;*CCOC(=O)CC&#39;, &#39;*CCOc1ccccc1&#39;, &#39;*OCCOc1ccccc1&#39;, &#39;*c1ccccc1&#39;]</span>
+</pre></div>
+</div>
+<p>葉ノードの情報</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ks</span><span class="o">=</span><span class="n">hierarch</span><span class="o">.</span><span class="n">GetLeaves</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ks</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ks</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ks</span>
+<span class="go">[&#39;*C(=O)CC&#39;, &#39;*CCO*&#39;, &#39;*CCOc1ccccc1&#39;, &#39;*c1ccccc1&#39;]</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_47.png" src="_images/jp_supple_47.png" />
+</div>
+<div class="section" id="brics">
+<span id="jp-notes-23"></span><h2>注釈: 化学反応 &gt;  BRICSの実装<a class="headerlink" href="#brics" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-23"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードで行われているSMILESを構造式に起こします。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="k">import</span> <span class="n">BRICS</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cdk2mols</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">SDMolSupplier</span><span class="p">(</span><span class="s1">&#39;data/cdk2.sdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m1</span> <span class="o">=</span> <span class="n">cdk2mols</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">BRICS</span><span class="o">.</span><span class="n">BRICSDecompose</span><span class="p">(</span><span class="n">m1</span><span class="p">))</span>
+<span class="go">[&#39;[14*]c1nc(N)nc2[nH]cnc12&#39;, &#39;[3*]O[3*]&#39;, &#39;[4*]CC(=O)C(C)C&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span> <span class="o">=</span> <span class="n">cdk2mols</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">BRICS</span><span class="o">.</span><span class="n">BRICSDecompose</span><span class="p">(</span><span class="n">m2</span><span class="p">))</span>
+<span class="go">[&#39;[1*]C(=O)NN(C)C&#39;, &#39;[14*]c1[nH]nc2c1C(=O)c1c([16*])cccc1-2&#39;, &#39;[16*]c1ccc([16*])cc1&#39;, &#39;[3*]OC&#39;, &#39;[5*]N[5*]&#39;]</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_48.png" src="_images/jp_supple_48.png" />
+<img alt="_images/jp_supple_49.png" src="_images/jp_supple_49.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">allfrags</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">cdk2mols</span><span class="p">:</span>
+<span class="gp">... </span>   <span class="n">pieces</span> <span class="o">=</span> <span class="n">BRICS</span><span class="o">.</span><span class="n">BRICSDecompose</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="gp">... </span>   <span class="n">allfrags</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pieces</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">allfrags</span><span class="p">)</span>
+<span class="go">90</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">allfrags</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
+<span class="go">[&#39;NS(=O)(=O)c1ccc(N/N=C2\\C(=O)Nc3ccc(Br)cc32)cc1&#39;, &#39;[1*]C(=O)C(C)C&#39;, &#39;[1*]C(=O)NN(C)C&#39;, &#39;[1*]C(=O)NN1CC[NH+](C)CC1&#39;, &#39;[1*]C(C)=O&#39;]</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_50.png" src="_images/jp_supple_50.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">prod</span> <span class="ow">in</span> <span class="n">prods</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">prod</span><span class="o">.</span><span class="n">UpdatePropertyCache</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">prods</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">&#39;COCCO&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">prods</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">&#39;O=C1Nc2ccc3ncsc3c2/C1=C/NCCO&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">prods</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">&#39;O=C1Nc2ccccc2/C1=C/NCCO&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_51.png" src="_images/jp_supple_51.png" />
+</div>
+<div class="section" id="jp-notes-24">
+<span id="id18"></span><h2>注釈: 化学反応 &gt; 他のフラグメント化手法<a class="headerlink" href="#jp-notes-24" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-24"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>該当セクション:「PythonでRDKitを始めよう」- 「化学反応」- 「<a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-24"><span class="std std-ref">他のフラグメント化手法</span></a>」</p>
+<p>以下のコードで行われているSMILESを構造式に起こします。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;CC1CC(O)C1CCC1CC1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bis</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">GetSubstructMatches</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmarts</span><span class="p">(</span><span class="s1">&#39;[!R][R]&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bis</span>
+<span class="go">((0, 1), (4, 3), (6, 5), (7, 8))</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_52.png" src="_images/jp_supple_52.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">nm</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">&#39;*C1CC([4*])C1[6*].[1*]C.[3*]O.[5*]CC[8*].[7*]C1CC1&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_53.png" src="_images/jp_supple_53.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bis</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">GetSubstructMatches</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmarts</span><span class="p">(</span><span class="s1">&#39;[!R][R]&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">labels</span><span class="o">=</span><span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">bi</span> <span class="ow">in</span> <span class="n">bis</span><span class="p">:</span>
+<span class="gp">... </span>   <span class="n">b</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">GetBondBetweenAtoms</span><span class="p">(</span><span class="n">bi</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">bi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">... </span>   <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">GetBeginAtomIdx</span><span class="p">()</span><span class="o">==</span><span class="n">bi</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+<span class="gp">... </span>       <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="gp">... </span>   <span class="k">else</span><span class="p">:</span>
+<span class="gp">... </span>       <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="gp">... </span>   <span class="n">bs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">GetIdx</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nm</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">FragmentOnBonds</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">bs</span><span class="p">,</span><span class="n">dummyLabels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">nm</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">&#39;[1*]C.[1*]CC[1*].[1*]O.[10*]C1CC([10*])C1[10*].[10*]C1CC1&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_54.png" src="_images/jp_supple_54.png" />
+</div>
+<div class="section" id="jp-notes-25">
+<span id="id19"></span><h2>注釈: 化学的特徴とファーマコフォア &gt; 化学的特徴<a class="headerlink" href="#jp-notes-25" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-25"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードで行われているSMILESを構造式に起こします。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;OCc1ccccc1CN&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">feats</span> <span class="o">=</span> <span class="n">factory</span><span class="o">.</span><span class="n">GetFeaturesForMol</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">feats</span><span class="p">)</span>
+<span class="go">8</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_55.png" src="_images/jp_supple_55.png" />
+</div>
+<div class="section" id="jp-notes-26">
+<span id="id20"></span><h2>注釈: 化学的特徴とファーマコフォア &gt; ２Dファーマコフォアフィンガープリント<a class="headerlink" href="#jp-notes-26" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-26"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードで行われているSMILESを構造式に起こします。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit.Chem.Pharm2D</span> <span class="k">import</span> <span class="n">Generate</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;OCC(=O)CCCN&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp</span> <span class="o">=</span> <span class="n">Generate</span><span class="o">.</span><span class="n">Gen2DFingerprint</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span><span class="n">sigFactory</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp</span>
+<span class="go">&lt;rdkit.DataStructs.cDataStructs.SparseBitVect object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+<span class="go">885</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp</span><span class="o">.</span><span class="n">GetNumOnBits</span><span class="p">()</span>
+<span class="go">57</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_56.png" src="_images/jp_supple_56.png" />
+<p>以下のコードで行われているSMILESを構造式に起こします。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit</span> <span class="k">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit.Chem.Pharm2D</span> <span class="k">import</span> <span class="n">Gobbi_Pharm2D</span><span class="p">,</span><span class="n">Generate</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;OCC=CC(=O)O&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp</span> <span class="o">=</span> <span class="n">Generate</span><span class="o">.</span><span class="n">Gen2DFingerprint</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">Gobbi_Pharm2D</span><span class="o">.</span><span class="n">factory</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp</span>
+<span class="go">&lt;rdkit.DataStructs.cDataStructs.SparseBitVect object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp</span><span class="o">.</span><span class="n">GetNumOnBits</span><span class="p">()</span>
+<span class="go">8</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">GetOnBits</span><span class="p">())</span>
+<span class="go">[23, 30, 150, 154, 157, 185, 28878, 30184]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Gobbi_Pharm2D</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">GetBitDescription</span><span class="p">(</span><span class="mi">157</span><span class="p">)</span>
+<span class="go">&#39;HA HD |0 3|3 0|&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Gobbi_Pharm2D</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">GetBitDescription</span><span class="p">(</span><span class="mi">30184</span><span class="p">)</span>
+<span class="go">&#39;HA HD HD |0 3 0|3 0 3|0 3 0|&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_57.png" src="_images/jp_supple_57.png" />
+</div>
+<div class="section" id="jp-notes-27">
+<span id="id21"></span><h2>注釈: 分子フラグメント<a class="headerlink" href="#jp-notes-27" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-27"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードで行われているSMILESを構造式に起こします。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fName</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">RDConfig</span><span class="o">.</span><span class="n">RDDataDir</span><span class="p">,</span><span class="s1">&#39;FunctionalGroups.txt&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="k">import</span> <span class="n">FragmentCatalog</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fparams</span> <span class="o">=</span> <span class="n">FragmentCatalog</span><span class="o">.</span><span class="n">FragCatParams</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="n">fName</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fparams</span><span class="o">.</span><span class="n">GetNumFuncGroups</span><span class="p">()</span>
+<span class="go">39</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fcat</span><span class="o">=</span><span class="n">FragmentCatalog</span><span class="o">.</span><span class="n">FragCatalog</span><span class="p">(</span><span class="n">fparams</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fcgen</span><span class="o">=</span><span class="n">FragmentCatalog</span><span class="o">.</span><span class="n">FragCatGenerator</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;OCC=CC(=O)O&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fcgen</span><span class="o">.</span><span class="n">AddFragsFromMol</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">fcat</span><span class="p">)</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fcat</span><span class="o">.</span><span class="n">GetEntryDescription</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">&#39;C&lt;-O&gt;C&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fcat</span><span class="o">.</span><span class="n">GetEntryDescription</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">&#39;C=C&lt;-C(=O)O&gt;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fcat</span><span class="o">.</span><span class="n">GetEntryDescription</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">&#39;C&lt;-C(=O)O&gt;=CC&lt;-O&gt;&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_58.png" src="_images/jp_supple_58.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">fcat</span><span class="o">.</span><span class="n">GetEntryFuncGroupIds</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">[34, 1]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fparams</span><span class="o">.</span><span class="n">GetFuncGroup</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">&lt;rdkit.Chem.rdchem.Mol object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmarts</span><span class="p">(</span><span class="n">fparams</span><span class="o">.</span><span class="n">GetFuncGroup</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="go">&#39;*-C(=O)[O&amp;D1]&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmarts</span><span class="p">(</span><span class="n">fparams</span><span class="o">.</span><span class="n">GetFuncGroup</span><span class="p">(</span><span class="mi">34</span><span class="p">))</span>
+<span class="go">&#39;*-[O&amp;D1]&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fparams</span><span class="o">.</span><span class="n">GetFuncGroup</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">GetProp</span><span class="p">(</span><span class="s1">&#39;_Name&#39;</span><span class="p">)</span>
+<span class="go">&#39;-C(=O)O&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fparams</span><span class="o">.</span><span class="n">GetFuncGroup</span><span class="p">(</span><span class="mi">34</span><span class="p">)</span><span class="o">.</span><span class="n">GetProp</span><span class="p">(</span><span class="s1">&#39;_Name&#39;</span><span class="p">)</span>
+<span class="go">&#39;-O&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_59.png" src="_images/jp_supple_59.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fcat</span><span class="o">=</span><span class="n">FragmentCatalog</span><span class="o">.</span><span class="n">FragCatalog</span><span class="p">(</span><span class="n">fparams</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;OCC(NC1CC1)CCC&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fcgen</span><span class="o">.</span><span class="n">AddFragsFromMol</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">fcat</span><span class="p">)</span>
+<span class="go">15</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fcat</span><span class="o">.</span><span class="n">GetEntryDescription</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">&#39;C&lt;-O&gt;C&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fcat</span><span class="o">.</span><span class="n">GetEntryDescription</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">&#39;CN&lt;-cPropyl&gt;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">fcat</span><span class="o">.</span><span class="n">GetEntryDownIds</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="go">[3, 4]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fcat</span><span class="o">.</span><span class="n">GetEntryDescription</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">&#39;C&lt;-O&gt;CC&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fcat</span><span class="o">.</span><span class="n">GetEntryDescription</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">&#39;C&lt;-O&gt;CN&lt;-cPropyl&gt;&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_60.png" src="_images/jp_supple_60.png" />
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fp2</span> <span class="o">=</span> <span class="n">fpgen</span><span class="o">.</span><span class="n">GetFPForMol</span><span class="p">(</span><span class="n">ms</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span><span class="n">fcat</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">andfp</span> <span class="o">=</span> <span class="n">fp</span><span class="o">&amp;</span><span class="n">fp2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obl</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">andfp</span><span class="o">.</span><span class="n">GetOnBits</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fcat</span><span class="o">.</span><span class="n">GetEntryDescription</span><span class="p">(</span><span class="n">obl</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">&#39;ccc(cc)NC&lt;=O&gt;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fcat</span><span class="o">.</span><span class="n">GetEntryDescription</span><span class="p">(</span><span class="n">obl</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">])</span>
+<span class="go">&#39;c&lt;-X&gt;ccc(N)cc&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_61.png" src="_images/jp_supple_61.png" />
+</div>
+<div class="section" id="jp-notes-28">
+<span id="id22"></span><h2>注釈: 発展的なトピック/警告 &gt; 分子の編集<a class="headerlink" href="#jp-notes-28" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>* <a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html#back-to-ref-28"><span class="std std-ref">本文</span></a> に戻る</p>
+<p>以下のコードで行われているSMILESを構造式に起こします。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;c1ccccc1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">SetAtomicNum</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">SanitizeMol</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="go">rdkit.Chem.rdmolops.SanitizeFlags.SANITIZE_NONE</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="go">&#39;c1ccncc1&#39;</span>
+</pre></div>
+</div>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;c1ccccc1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">SetAtomicNum</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="go">&#39;c1ccocc1&#39;</span>
+</pre></div>
+</div>
+<img alt="_images/jp_supple_62.png" src="_images/jp_supple_62.png" />
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="terminology_jp.html" class="btn btn-neutral float-right" title="訳語対応集" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Backwards_incompatible_changes_jp.html" class="btn btn-neutral" title="後方互換性の無い変更" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, anonymous
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'1.00',
+              LANGUAGE:'ja',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,1075 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>RDKitデータベースカートリッジ &#8212; RDKit_unofficial_translation_JP 1.00 ドキュメント</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.00',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="rdkit">
+<h1>RDKitデータベースカートリッジ<a class="headerlink" href="#rdkit" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#the-rdkit-database-cartridge">The RDKit database cartridge</a>]</p>
+<div class="section" id="id1">
+<h2>このページについて<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#what-is-this">What is this?</a>]</p>
+<p>このページRDKit PostgreSQL cartridgeのチュートリアルとリファレンスガイドです。</p>
+<p>間違いを見つけたり、より良い方法を提案する場合は、ソースドキュメント（.mdファイル）をご自身で修正していただくか、
+メーリングリスト: <a class="reference external" href="mailto:rdkit-discuss&#37;&#52;&#48;lists&#46;sourceforge&#46;net">rdkit-discuss<span>&#64;</span>lists<span>&#46;</span>sourceforge<span>&#46;</span>net</a> に送ってください。（メーリングリストを利用する場合はまず加入する必要があります。）</p>
+</div>
+<div class="section" id="id2">
+<h2>チュートリアル<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#tutorial">Tutorial</a>]</p>
+<div class="section" id="id3">
+<h3>イントロダクション<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#introduction">Introduction</a>]</p>
+</div>
+<div class="section" id="id4">
+<h3>データベースの作成<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#creating-databases">Creating databases</a></p>
+<div class="section" id="id5">
+<h4>環境設定<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#configuration">Configuration</a>]</p>
+<p>以下のタイミングの情報は、ごく一般的なデスクトップPC（Dell Studio XPS with a 2.9GHz i7 CPU and 8GB of RAM）上で
+Ubuntu 12.04を実行し、PostgreSQL v9.1.4.を用いた場合の結果です。データベースはデフォルトのパラメータでインストールされています。</p>
+<p>データベースの読み込みとインデックスを作成している間のパフォーマンスを向上させるため、postgresql.confにあるpostgresqlの環境設定を2、3変更しました。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">synchronous_commit</span> <span class="o">=</span> <span class="n">off</span>      <span class="c1"># immediate fsync at commit</span>
+<span class="n">full_page_writes</span> <span class="o">=</span> <span class="n">off</span>            <span class="c1"># recover from partial</span>
+</pre></div>
+</div>
+<p>また、探索の性能を向上させるため、postgresqlが使用可能なメモリを、デフォルトの極めて控えめな設定よりも多くしています。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">shared_buffers</span> <span class="o">=</span> <span class="mi">2048</span><span class="n">MB</span>           <span class="c1"># min 128kB</span>
+                  <span class="c1"># (change requires restart)</span>
+<span class="n">work_mem</span> <span class="o">=</span> <span class="mi">128</span><span class="n">MB</span>              <span class="c1"># min 64kB</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id6">
+<h4>ファイルからデータベースを作成する<a class="headerlink" href="#id6" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#creating-a-database-from-a-file">Creating a database from a file</a>]</p>
+<p>この例では、emolecules.comのURL <a class="reference external" href="http://www.emolecules.com/doc/plus/download-database.php">http://www.emolecules.com/doc/plus/download-database.php</a> からダウンロード可能な、
+購入可能な化合物に関するSMILESファイルからデータベースを読み込む方法をお見せします。</p>
+<p>この例をそっくりそのままご自身で繰り返してみようとされる場合、600万行のデータベースの読み込みと、全てのフィンガープリンの生成に数時間要することには気をつけてください。</p>
+<p>まず最初にデータベースを作成し、カートリッジをインストールします。</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">RDKit_trunk</span><span class="o">/</span><span class="n">Data</span><span class="o">/</span><span class="n">emolecules</span> <span class="o">&gt;</span> <span class="n">createdb</span> <span class="n">emolecules</span>
+<span class="o">~/</span><span class="n">RDKit_trunk</span><span class="o">/</span><span class="n">Data</span><span class="o">/</span><span class="n">emolecules</span> <span class="o">&gt;</span> <span class="n">psql</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;create extension rdkit&#39;</span> <span class="n">emolecules</span>
+</pre></div>
+</div>
+<p>次に、生のデータを持つテーブルを作成し、データを格納します:</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">RDKit_trunk</span><span class="o">/</span><span class="n">Data</span><span class="o">/</span><span class="n">emolecules</span> <span class="o">&gt;</span> <span class="n">psql</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;create table raw_data (id SERIAL, smiles text, emol_id integer, parent_id integer)&#39;</span> <span class="n">emolecules</span>
+<span class="n">NOTICE</span><span class="p">:</span>  <span class="n">CREATE</span> <span class="n">TABLE</span> <span class="n">will</span> <span class="n">create</span> <span class="n">implicit</span> <span class="n">sequence</span> <span class="s2">&quot;raw_data_id_seq&quot;</span> <span class="k">for</span> <span class="n">serial</span> <span class="n">column</span> <span class="s2">&quot;raw_data.id&quot;</span>
+<span class="n">CREATE</span> <span class="n">TABLE</span>
+<span class="o">~/</span><span class="n">RDKit_trunk</span><span class="o">/</span><span class="n">Data</span><span class="o">/</span><span class="n">emolecules</span> <span class="o">&gt;</span> <span class="n">zcat</span> <span class="n">emolecules</span><span class="o">-</span><span class="mi">2013</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mf">01.</span><span class="n">smi</span><span class="o">.</span><span class="n">gz</span> <span class="o">|</span> <span class="n">sed</span> <span class="s1">&#39;1d; s/</span><span class="se">\\</span><span class="s1">/</span><span class="se">\\\\</span><span class="s1">/g&#39;</span> <span class="o">|</span> <span class="n">psql</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;copy raw_data (smiles,emol_id,parent_id) from stdin with delimiter &#39; &#39;&quot;</span> <span class="n">emolecules</span>
+</pre></div>
+</div>
+<p>次に分子のテーブルを作成しますが、RDKitが処理できるSMILESのみのテーブルとなります:</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">RDKit_trunk</span><span class="o">/</span><span class="n">Data</span><span class="o">/</span><span class="n">emolecules</span> <span class="o">&gt;</span> <span class="n">psql</span> <span class="n">emolecules</span>
+<span class="n">psql</span> <span class="p">(</span><span class="mf">9.1</span><span class="o">.</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">Type</span> <span class="s2">&quot;help&quot;</span> <span class="k">for</span> <span class="n">help</span><span class="o">.</span>
+<span class="n">emolecules</span><span class="o">=</span><span class="c1"># select * into mols from (select id,mol_from_smiles(smiles::cstring) m from raw_data) tmp where m is not null;</span>
+<span class="n">WARNING</span><span class="p">:</span>  <span class="n">could</span> <span class="ow">not</span> <span class="n">create</span> <span class="n">molecule</span> <span class="kn">from</span> <span class="nn">SMILES</span> <span class="s1">&#39;CN(C)C(=[N+](C)C)Cl.F[P-](F)(F)(F)(F)F&#39;</span>
+<span class="o">...</span> <span class="n">a</span> <span class="n">lot</span> <span class="n">of</span> <span class="n">warnings</span> <span class="n">deleted</span> <span class="o">...</span>
+<span class="n">SELECT</span> <span class="mi">6008732</span>
+<span class="n">emolecules</span><span class="o">=</span><span class="c1"># create index molidx on mols using gist(m);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span>
+</pre></div>
+</div>
+<p>最後のステップは、部分構造検索をするつもりの時のみ必要となります。</p>
+</div>
+<div class="section" id="chembl">
+<h4>ChEMBLの読み込み<a class="headerlink" href="#chembl" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#loading-chembl">Loading ChEMBL</a>]</p>
+<p>ChEMBLのウェブサイト <a class="reference external" href="ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/latest">ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/latest</a> から
+postsqlgreダンプをダウンロードし、インストールすることから始めます。</p>
+<p>データベースに接続、カートリッジをインストールし、そしてこれから使うスキーマを作成します:</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="n">chembl_23</span><span class="o">=</span><span class="c1"># create extension if not exists rdkit;</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># create schema rdk;</span>
+</pre></div>
+</div>
+<p>分子を作成し、部分構造検索のインデックスを構築します:</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select * into rdk.mols from (select molregno,mol_from_ctab(molfile::cstring) m  from compound_structures) tmp where m is not null;</span>
+<span class="n">SELECT</span> <span class="mi">1727081</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># create index molidx on rdk.mols using gist(m);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># alter table rdk.mols add primary key (molregno);</span>
+<span class="n">ALTER</span> <span class="n">TABLE</span>
+</pre></div>
+</div>
+<p>フィンガープリントをいくつか作成し、類似度検索のインデックスを構築します:</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select molregno,torsionbv_fp(m) as torsionbv,morganbv_fp(m) as mfp2,featmorganbv_fp(m) as ffp2 into rdk.fps from rdk.mols;</span>
+<span class="n">SELECT</span> <span class="mi">1727081</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># create index fps_ttbv_idx on rdk.fps using gist(torsionbv);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># create index fps_mfp2_idx on rdk.fps using gist(mfp2);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># create index fps_ffp2_idx on rdk.fps using gist(ffp2);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># alter table rdk.fps add primary key (molregno);</span>
+<span class="n">ALTER</span> <span class="n">TABLE</span>
+</pre></div>
+</div>
+<p>psqlプロンプトにペーストするだけでいいように、以下の一つのブロックの中に、ここ（とこれ以降）で使ったコマンドをまとめておきます:</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span>create extension if not exists rdkit;
+create schema rdk;
+select * into rdk.mols from (select molregno,mol_from_ctab(molfile::cstring) m  from compound_structures) tmp where m is not null;
+create index molidx on rdk.mols using gist(m);
+alter table rdk.mols add primary key (molregno);
+select molregno,torsionbv_fp(m) as torsionbv,morganbv_fp(m) as mfp2,featmorganbv_fp(m) as ffp2 into rdk.fps from rdk.mols;
+create index fps_ttbv_idx on rdk.fps using gist(torsionbv);
+create index fps_mfp2_idx on rdk.fps using gist(mfp2);
+create index fps_ffp2_idx on rdk.fps using gist(ffp2);
+alter table rdk.fps add primary key (molregno);
+create or replace function get_mfp2_neighbors(smiles text)
+returns table(molregno integer, m mol, similarity double precision) as
+$$
+select molregno,m,tanimoto_sml(morganbv_fp(mol_from_smiles($1::cstring)),mfp2) as similarity
+from rdk.fps join rdk.mols using (molregno)
+where morganbv_fp(mol_from_smiles($1::cstring))%mfp2
+order by morganbv_fp(mol_from_smiles($1::cstring))&lt;%&gt;mfp2;
+$$ language sql stable ;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id7">
+<h3>部分構造検索<a class="headerlink" href="#id7" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#substructure-searches">Substructure searches</a>]</p>
+<p>例として用いたクエリの分子は<a class="reference external" href="http://www.emolecules.com/">eMolecules home Page</a>から取得しました:</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select count(*) from rdk.mols where m@&gt;&#39;c1cccc2c1nncc2&#39; ;</span>
+ <span class="n">count</span>
+<span class="o">-------</span>
+   <span class="mi">447</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">107.602</span> <span class="n">ms</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select count(*) from rdk.mols where m@&gt;&#39;c1ccnc2c1nccn2&#39; ;</span>
+ <span class="n">count</span>
+<span class="o">-------</span>
+  <span class="mi">1013</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">216.222</span> <span class="n">ms</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select count(*) from rdk.mols where m@&gt;&#39;c1cncc2n1ccn2&#39; ;</span>
+ <span class="n">count</span>
+<span class="o">-------</span>
+  <span class="mi">1775</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">88.266</span> <span class="n">ms</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select count(*) from rdk.mols where m@&gt;&#39;Nc1ncnc(N)n1&#39; ;</span>
+ <span class="n">count</span>
+<span class="o">-------</span>
+  <span class="mi">5842</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">327.855</span> <span class="n">ms</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select count(*) from rdk.mols where m@&gt;&#39;c1scnn1&#39; ;</span>
+ <span class="n">count</span>
+<span class="o">-------</span>
+ <span class="mi">15962</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">568.675</span> <span class="n">ms</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select count(*) from rdk.mols where m@&gt;&#39;c1cccc2c1ncs2&#39; ;</span>
+ <span class="n">count</span>
+<span class="o">-------</span>
+ <span class="mi">18986</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">998.104</span> <span class="n">ms</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select count(*) from rdk.mols where m@&gt;&#39;c1cccc2c1CNCCN2&#39; ;</span>
+ <span class="n">count</span>
+<span class="o">-------</span>
+  <span class="mi">1613</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">1922.273</span> <span class="n">ms</span>
+</pre></div>
+</div>
+<p>最後の２つのクエリでは、実行し全ての結果の数を数え始めるまでに時間がかかったことに注意してください。</p>
+<p>170万化合物全体から検索していることを考えれば、これらの検索時間が信じられないほど遅いというわけではありませんが、もっと速くなるならそれに越したことはないでしょう。</p>
+<p>特に大きな数の結果を返すクエリにおいて、検索を加速する簡単な方法のひとつは、限られた数の結果のみを取得することです:</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select * from rdk.mols where m@&gt;&#39;c1cccc2c1CNCCN2&#39; limit 100;</span>
+ <span class="n">molregno</span> <span class="o">|</span>                                                                                             <span class="n">m</span>
+
+<span class="o">----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="o">--------------------------------</span>
+   <span class="mi">908048</span> <span class="o">|</span> <span class="n">O</span><span class="o">=</span><span class="n">C1CN</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c2ccc</span><span class="p">(</span><span class="n">Br</span><span class="p">)</span><span class="n">o2</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="n">c2ccc</span><span class="p">(</span><span class="n">F</span><span class="p">)</span><span class="n">cc2</span><span class="p">)</span><span class="n">c2cc</span><span class="p">(</span><span class="n">F</span><span class="p">)</span><span class="n">ccc2N1</span>
+   <span class="mi">931972</span> <span class="o">|</span> <span class="n">Cl</span><span class="o">.</span><span class="n">c1ccc</span><span class="p">(</span><span class="n">CC2CNc3ccccc3CN2</span><span class="p">)</span><span class="n">cc1</span>
+   <span class="mi">904450</span> <span class="o">|</span> <span class="n">CCOC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">2</span><span class="n">COc3ccc</span><span class="p">(</span><span class="n">Cl</span><span class="p">)</span><span class="n">cc3</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">2</span><span class="n">N2C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c3ccc</span><span class="p">(</span><span class="n">Cl</span><span class="p">)</span><span class="n">cc3NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@@</span><span class="p">]</span><span class="mi">12</span><span class="n">C</span>
+   <span class="mi">226391</span> <span class="o">|</span> <span class="n">C</span><span class="o">/</span><span class="n">C</span><span class="o">=</span><span class="n">C1</span><span class="o">/</span><span class="n">CC2C</span><span class="p">(</span><span class="n">OC</span><span class="p">)</span><span class="n">Nc3cc</span><span class="p">(</span><span class="n">OC</span><span class="p">)</span><span class="n">c</span><span class="p">(</span><span class="n">OC</span><span class="p">)</span><span class="n">cc3C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N2C1</span>
+   <span class="mi">930820</span> <span class="o">|</span> <span class="n">CN1CC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">(</span><span class="n">CC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">Nc2ccc</span><span class="p">(</span><span class="n">N</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">)</span><span class="n">cc2</span><span class="p">)</span><span class="n">c2ccccc2C1</span><span class="o">=</span><span class="n">O</span>
+    <span class="mi">18576</span> <span class="o">|</span> <span class="n">CO</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">Nc2c</span><span class="p">(</span><span class="n">ccc</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">c2O</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N2C</span><span class="o">=</span><span class="n">C</span><span class="p">(</span><span class="o">/</span><span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="o">/</span><span class="n">C</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">C</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">12</span>
+   <span class="mi">249934</span> <span class="o">|</span> <span class="n">O</span><span class="o">=</span><span class="n">C</span><span class="p">(</span><span class="n">c1cccc2ccccc12</span><span class="p">)</span><span class="n">N1CCN</span><span class="p">(</span><span class="n">Cc2cncn2Cc2ccccc2</span><span class="p">)</span><span class="n">c2ccccc2C1</span>
+   <span class="o">...</span>
+    <span class="mi">91020</span> <span class="o">|</span> <span class="n">CC</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N2c3ccccc3</span><span class="p">[</span><span class="n">C</span><span class="o">@@</span><span class="p">](</span><span class="n">O</span><span class="p">)(</span><span class="n">C</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">3</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c4ccccc4N4C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c5ccccc5NC34</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">2</span><span class="n">N1C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="n">CCCNC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">OCc1ccccc1</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">OC</span><span class="p">(</span><span class="n">C</span><span class="p">)(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span>
+    <span class="mi">91225</span> <span class="o">|</span> <span class="n">CC</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N2c3ccccc3</span><span class="p">[</span><span class="n">C</span><span class="o">@@</span><span class="p">](</span><span class="n">O</span><span class="p">)(</span><span class="n">C</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">3</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c4ccccc4N4C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c5ccccc5NC34</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">2</span><span class="n">N1C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">CCC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">O</span><span class="o">-</span><span class="p">]</span><span class="o">.</span><span class="p">[</span><span class="n">Na</span><span class="o">+</span><span class="p">]</span>
+   <span class="mi">348798</span> <span class="o">|</span> <span class="n">O</span><span class="o">=</span><span class="n">C</span><span class="p">(</span><span class="n">O</span><span class="p">)</span><span class="n">CN1C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="n">c2ccc</span><span class="p">(</span><span class="n">Cl</span><span class="p">)</span><span class="n">cc2</span><span class="p">)</span><span class="n">N</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">O</span><span class="p">)</span><span class="n">c2ccc</span><span class="p">(</span><span class="n">Cl</span><span class="p">)</span><span class="n">cc2</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c2cc</span><span class="p">(</span><span class="n">I</span><span class="p">)</span><span class="n">ccc21</span>
+   <span class="mi">348972</span> <span class="o">|</span> <span class="n">C</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">c1ccc</span><span class="p">(</span><span class="n">Cl</span><span class="p">)</span><span class="n">cc1</span><span class="p">)</span><span class="n">N1C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c2cc</span><span class="p">(</span><span class="n">I</span><span class="p">)</span><span class="n">ccc2N</span><span class="p">(</span><span class="n">CCCCC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">O</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">c1ccc</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="n">F</span><span class="p">)(</span><span class="n">F</span><span class="p">)</span><span class="n">F</span><span class="p">)</span><span class="n">cc1</span>
+
+<span class="o">...</span><span class="n">skipping</span> <span class="mi">23</span> <span class="n">lines</span>
+<span class="n">Time</span><span class="p">:</span> <span class="mf">97.357</span> <span class="n">ms</span>
+</pre></div>
+</div>
+<div class="section" id="smarts">
+<h4>SMARTSベースのクエリ<a class="headerlink" href="#smarts" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#smarts-based-queries">SMARTS-based queries</a>]</p>
+<p>オキサジアゾールあるいはチアジアゾール:</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select * from rdk.mols where m@&gt;&#39;c1[o,s]ncn1&#39;::qmol limit 500;</span>
+ <span class="n">molregno</span> <span class="o">|</span>                                                      <span class="n">m</span>
+<span class="o">----------+--------------------------------------------------------------------------------------------------------------</span>
+  <span class="mi">1370170</span> <span class="o">|</span> <span class="n">Fc1cccc</span><span class="p">(</span><span class="o">-</span><span class="n">c2nc</span><span class="p">(</span><span class="n">NCC3COc4ccccc4O3</span><span class="p">)</span><span class="n">no2</span><span class="p">)</span><span class="n">c1F</span>
+  <span class="mi">1370417</span> <span class="o">|</span> <span class="n">COc1cc</span><span class="p">(</span><span class="n">CN2CCC</span><span class="p">(</span><span class="n">Cc3nc</span><span class="p">(</span><span class="o">-</span><span class="n">c4ccc5c</span><span class="p">(</span><span class="n">c4</span><span class="p">)</span><span class="n">CCO5</span><span class="p">)</span><span class="n">no3</span><span class="p">)</span><span class="n">C2</span><span class="p">)</span><span class="n">ccc1F</span>
+  <span class="mi">1370526</span> <span class="o">|</span> <span class="n">Cl</span><span class="o">.</span><span class="n">Cn1cc</span><span class="p">(</span><span class="o">-</span><span class="n">c2noc</span><span class="p">(</span><span class="o">/</span><span class="n">C</span><span class="o">=</span><span class="n">C3</span><span class="o">/</span><span class="n">CCN4CCCC</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">4</span><span class="n">C3</span><span class="p">)</span><span class="n">n2</span><span class="p">)</span><span class="n">c2ccccc21</span>
+  <span class="mi">1379267</span> <span class="o">|</span> <span class="n">CCC</span><span class="p">(</span><span class="n">c1ccccc1</span><span class="p">)</span><span class="n">c1noc</span><span class="p">(</span><span class="n">CCN</span><span class="p">(</span><span class="n">CC</span><span class="p">)</span><span class="n">CC</span><span class="p">)</span><span class="n">n1</span>
+  <span class="mi">1404150</span> <span class="o">|</span> <span class="n">OC</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">O</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">c2nc</span><span class="p">(</span><span class="o">-</span><span class="n">c3nc</span><span class="p">(</span><span class="o">-</span><span class="n">c4cccs4</span><span class="p">)</span><span class="n">no3</span><span class="p">)</span><span class="n">cs2</span><span class="p">)</span><span class="n">C</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">O</span>
+  <span class="mi">1217463</span> <span class="o">|</span> <span class="n">CC</span><span class="p">(</span><span class="n">C</span><span class="p">)(</span><span class="n">C</span><span class="p">)</span><span class="n">c1ccc</span><span class="p">(</span><span class="o">-</span><span class="n">c2noc</span><span class="p">(</span><span class="n">CCC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N3CCCCC3</span><span class="p">)</span><span class="n">n2</span><span class="p">)</span><span class="n">cc1</span>
+  <span class="o">...</span>
+  <span class="mi">1517753</span> <span class="o">|</span> <span class="n">CC</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">c1noc</span><span class="p">(</span><span class="n">N2CCC</span><span class="p">(</span><span class="n">CO</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">3</span><span class="n">CC</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">c4ccc</span><span class="p">(</span><span class="n">S</span><span class="p">(</span><span class="n">C</span><span class="p">)(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">cc4F</span><span class="p">)</span><span class="n">CC3</span><span class="p">)</span><span class="n">CC2</span><span class="p">)</span><span class="n">n1</span>
+  <span class="mi">1263024</span> <span class="o">|</span> <span class="n">COc1cc</span><span class="p">(</span><span class="n">Nc2nc3c</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span><span class="n">CCCC3c2ccccc2</span><span class="p">)</span><span class="n">ccc1</span><span class="o">-</span><span class="n">c1nc</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">no1</span>
+  <span class="mi">1264016</span> <span class="o">|</span> <span class="n">O</span><span class="o">=</span><span class="n">C</span><span class="p">(</span><span class="n">O</span><span class="p">)</span><span class="n">CCc1nc2cc</span><span class="p">(</span><span class="o">-</span><span class="n">c3noc</span><span class="p">(</span><span class="o">-</span><span class="n">c4cc</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="n">F</span><span class="p">)(</span><span class="n">F</span><span class="p">)</span><span class="n">F</span><span class="p">)</span><span class="n">cc</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="n">F</span><span class="p">)(</span><span class="n">F</span><span class="p">)</span><span class="n">F</span><span class="p">)</span><span class="n">c4</span><span class="p">)</span><span class="n">n3</span><span class="p">)</span><span class="n">ccc2</span><span class="p">[</span><span class="n">nH</span><span class="p">]</span><span class="mi">1</span>
+  <span class="mi">1847733</span> <span class="o">|</span> <span class="n">Cc1cc</span><span class="p">(</span><span class="o">-</span><span class="n">c2noc</span><span class="p">([</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">3</span><span class="n">CCCCN3C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">COc3ccccc3</span><span class="p">)</span><span class="n">n2</span><span class="p">)</span><span class="n">no1</span>
+<span class="p">(</span><span class="mi">500</span> <span class="n">rows</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">761.847</span> <span class="n">ms</span>
+</pre></div>
+</div>
+<p>純粋なSMILESのクエリと比較すると遅いですが、これはSMARTSベースのクエリには一般的に当てはまることです。</p>
+</div>
+<div class="section" id="id8">
+<h4>立体化学の使用方法<a class="headerlink" href="#id8" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#using-stereochemistry">Using Stereochemistry</a>]</p>
+<p>デフォルトでは部分構造クエリを実行する際に立体化学が考慮されないことに気をつけてください:</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select * from rdk.mols where m@&gt;&#39;NC(=O)[C@@H]1CCCN1C=O&#39; limit 10;</span>
+ <span class="n">molregno</span> <span class="o">|</span>
+               <span class="n">m</span>
+
+<span class="o">----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="o">----------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="o">---------------------</span>
+    <span class="mi">87611</span> <span class="o">|</span> <span class="n">CNCC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCCN</span><span class="o">=</span><span class="n">C</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="n">N</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N1C</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">2</span><span class="n">C</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccc</span><span class="p">(</span><span class="n">O</span><span class="p">)</span><span class="n">cc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1c</span><span class="p">[</span><span class="n">nH</span><span class="p">]</span><span class="n">cn1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N1CCC</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccccc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span>
+<span class="p">)</span><span class="n">O</span><span class="p">)</span><span class="n">CCSS2</span>
+    <span class="mi">88372</span> <span class="o">|</span> <span class="n">CNCCCC</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccccc1</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCCCNC</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccc</span><span class="p">(</span><span class="n">O</span><span class="p">)</span><span class="n">cc1</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">CO</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccccc1</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccccc1</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span>
+<span class="n">c1ccc2ccccc2c1</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N1CCC</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">O</span>
+    <span class="mi">88322</span> <span class="o">|</span> <span class="n">CC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccc2ccccc2c1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccccc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccccc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">CO</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccc</span><span class="p">(</span><span class="n">O</span><span class="p">)</span><span class="n">cc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCCCNC</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1</span>
+<span class="n">ccccc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCCCNC</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N1CCC</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">O</span>
+    <span class="mi">88168</span> <span class="o">|</span> <span class="n">CC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccc2ccccc2c1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccccc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccccc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">CO</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccc</span><span class="p">(</span><span class="n">O</span><span class="p">)</span><span class="n">cc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCCN</span><span class="o">=</span><span class="n">C</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="n">N</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1</span>
+<span class="n">ccccc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCCCNC1CCCC1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N1CCC</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">O</span>
+    <span class="mi">88150</span> <span class="o">|</span> <span class="n">CC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccc2ccccc2c1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccccc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccccc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">CO</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccc</span><span class="p">(</span><span class="n">O</span><span class="p">)</span><span class="n">cc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCCN</span><span class="o">=</span><span class="n">C</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="n">N</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1</span>
+<span class="n">ccccc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCCCNCc1ccc</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">cc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N1CCC</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">O</span>
+    <span class="mi">88373</span> <span class="o">|</span> <span class="n">CC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccc2ccccc2c1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccccc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccccc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">CO</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccc</span><span class="p">(</span><span class="n">O</span><span class="p">)</span><span class="n">cc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCCCNC1CCCCC1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span>
+<span class="n">Cc1ccccc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCCCNC1CCCCC1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N1CCC</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">O</span>
+    <span class="mi">93377</span> <span class="o">|</span> <span class="n">CC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccc</span><span class="p">([</span><span class="n">N</span><span class="o">+</span><span class="p">](</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">O</span><span class="o">-</span><span class="p">])</span><span class="n">cc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N1CCC</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCC</span><span class="o">/</span><span class="n">N</span><span class="o">=</span><span class="n">C</span><span class="p">(</span><span class="o">/</span><span class="n">N</span><span class="p">)</span><span class="n">NS</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c1c</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">c</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">c2c</span><span class="p">(</span><span class="n">c1C</span><span class="p">)</span><span class="n">CCC</span><span class="p">(</span><span class="n">C</span><span class="p">)(</span><span class="n">C</span><span class="p">)</span><span class="n">O2</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccccc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span>
+<span class="n">CCC</span><span class="o">/</span><span class="n">N</span><span class="o">=</span><span class="n">C</span><span class="p">(</span><span class="o">/</span><span class="n">N</span><span class="p">)</span><span class="n">NS</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c1c</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">c</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">c2c</span><span class="p">(</span><span class="n">c1C</span><span class="p">)</span><span class="n">CCC</span><span class="p">(</span><span class="n">C</span><span class="p">)(</span><span class="n">C</span><span class="p">)</span><span class="n">O2</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">NCC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">COC</span><span class="p">(</span><span class="n">C</span><span class="p">)(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCCCNC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c1ccccc1N</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">NCC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">)</span><span class="n">OC</span><span class="p">(</span><span class="n">C</span><span class="p">)(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span>
+    <span class="mi">94493</span> <span class="o">|</span> <span class="n">CC</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]([</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">)</span><span class="n">O</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc2c</span><span class="p">[</span><span class="n">nH</span><span class="p">]</span><span class="n">c3ccccc23</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCCCN</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">2</span><span class="n">CCCN2C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCC</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">NC</span>
+<span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">CNC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">CN</span><span class="p">)</span><span class="n">CSSC</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc2ccc</span><span class="p">(</span><span class="n">O</span><span class="p">)</span><span class="n">cc2</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">CO</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">NCC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">NCC</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">)</span><span class="n">O</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc2c</span><span class="p">[</span><span class="n">nH</span><span class="p">]</span><span class="n">cn2</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc2ccccc2</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">CNC</span>
+<span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">2</span><span class="n">CCCN2C1</span><span class="o">=</span><span class="n">O</span>
+
+<span class="o">...</span><span class="n">skipping</span> <span class="mi">1</span> <span class="n">line</span>
+    <span class="mi">89559</span> <span class="o">|</span> <span class="n">CC1</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">SSC</span><span class="p">(</span><span class="n">C</span><span class="p">)(</span><span class="n">C</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc2c</span><span class="p">[</span><span class="n">nH</span><span class="p">]</span><span class="n">cn2</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N2CCC</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">2</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc2ccccc2</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">O</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc2ccc</span><span class="p">(</span><span class="n">O</span><span class="p">)</span><span class="n">cc2</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCCN</span><span class="o">=</span><span class="n">C</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="n">N</span><span class="p">)</span><span class="n">N</span>
+<span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">N</span><span class="p">)</span><span class="n">CC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">O</span>
+<span class="p">(</span><span class="mi">10</span> <span class="n">rows</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>rdkit.do_chiral_sss構成変数を使うことで設定を変えることができます:</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="n">chembl_23</span><span class="o">=</span><span class="c1"># set rdkit.do_chiral_sss=true;</span>
+<span class="n">SET</span>
+<span class="n">Time</span><span class="p">:</span> <span class="mf">0.241</span> <span class="n">ms</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select * from rdk.mols where m@&gt;&#39;NC(=O)[C@@H]1CCCN1C=O&#39; limit 10;</span>
+ <span class="n">molregno</span> <span class="o">|</span>
+            <span class="n">m</span>
+
+<span class="o">----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="o">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="o">---------------</span>
+    <span class="mi">87611</span> <span class="o">|</span> <span class="n">CNCC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCCN</span><span class="o">=</span><span class="n">C</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="n">N</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N1C</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">2</span><span class="n">C</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccc</span><span class="p">(</span><span class="n">O</span><span class="p">)</span><span class="n">cc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1c</span><span class="p">[</span><span class="n">nH</span><span class="p">]</span><span class="n">cn1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N1CCC</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccccc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">O</span><span class="p">)</span>
+<span class="n">CCSS2</span>
+    <span class="mi">93377</span> <span class="o">|</span> <span class="n">CC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccc</span><span class="p">([</span><span class="n">N</span><span class="o">+</span><span class="p">](</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">O</span><span class="o">-</span><span class="p">])</span><span class="n">cc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N1CCC</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCC</span><span class="o">/</span><span class="n">N</span><span class="o">=</span><span class="n">C</span><span class="p">(</span><span class="o">/</span><span class="n">N</span><span class="p">)</span><span class="n">NS</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c1c</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">c</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">c2c</span><span class="p">(</span><span class="n">c1C</span><span class="p">)</span><span class="n">CCC</span><span class="p">(</span><span class="n">C</span><span class="p">)(</span><span class="n">C</span><span class="p">)</span><span class="n">O2</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc1ccccc1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCC</span>
+<span class="o">/</span><span class="n">N</span><span class="o">=</span><span class="n">C</span><span class="p">(</span><span class="o">/</span><span class="n">N</span><span class="p">)</span><span class="n">NS</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c1c</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">c</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">c2c</span><span class="p">(</span><span class="n">c1C</span><span class="p">)</span><span class="n">CCC</span><span class="p">(</span><span class="n">C</span><span class="p">)(</span><span class="n">C</span><span class="p">)</span><span class="n">O2</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">NCC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">COC</span><span class="p">(</span><span class="n">C</span><span class="p">)(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCCCNC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c1ccccc1N</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">NCC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">)</span><span class="n">OC</span><span class="p">(</span><span class="n">C</span><span class="p">)(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span>
+    <span class="mi">94493</span> <span class="o">|</span> <span class="n">CC</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]([</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">)</span><span class="n">O</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc2c</span><span class="p">[</span><span class="n">nH</span><span class="p">]</span><span class="n">c3ccccc23</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCCCN</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">2</span><span class="n">CCCN2C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCC</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span>
+<span class="p">)</span><span class="n">CNC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">CN</span><span class="p">)</span><span class="n">CSSC</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc2ccc</span><span class="p">(</span><span class="n">O</span><span class="p">)</span><span class="n">cc2</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">CO</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">NCC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">NCC</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">)</span><span class="n">O</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc2c</span><span class="p">[</span><span class="n">nH</span><span class="p">]</span><span class="n">cn2</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc2ccccc2</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">CNC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span>
+<span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">2</span><span class="n">CCCN2C1</span><span class="o">=</span><span class="n">O</span>
+    <span class="mi">89558</span> <span class="o">|</span> <span class="n">NC</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">=</span><span class="n">NCCC</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">N</span><span class="p">)</span><span class="n">CC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">O</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">CCSSC</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc2c</span><span class="p">[</span><span class="n">nH</span><span class="p">]</span><span class="n">cn2</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N2CCC</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">2</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc2ccccc2</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">O</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc2ccc</span><span class="p">(</span><span class="n">O</span><span class="p">)</span><span class="n">cc</span>
+<span class="mi">2</span><span class="p">)</span><span class="n">NC1</span><span class="o">=</span><span class="n">O</span>
+    <span class="mi">89559</span> <span class="o">|</span> <span class="n">CC1</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">SSC</span><span class="p">(</span><span class="n">C</span><span class="p">)(</span><span class="n">C</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc2c</span><span class="p">[</span><span class="n">nH</span><span class="p">]</span><span class="n">cn2</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N2CCC</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">2</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc2ccccc2</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">O</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">Cc2ccc</span><span class="p">(</span><span class="n">O</span><span class="p">)</span><span class="n">cc2</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">CCCN</span><span class="o">=</span><span class="n">C</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="n">N</span><span class="p">)</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span>
+<span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">N</span><span class="p">)</span><span class="n">CC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">O</span>
+   <span class="mi">126618</span> <span class="o">|</span> <span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">CCCN1C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">CCCN1C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">](</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">N</span><span class="p">)</span><span class="n">Cc1ccccc1</span>
+   <span class="mi">152339</span> <span class="o">|</span> <span class="n">O</span><span class="o">=</span><span class="n">C</span><span class="p">(</span><span class="n">O</span><span class="p">)</span><span class="n">CN</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">CC1CCCCC1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N1CCC</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">NCCCc1c</span><span class="p">[</span><span class="n">nH</span><span class="p">]</span><span class="n">cn1</span>
+   <span class="mi">152504</span> <span class="o">|</span> <span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">CC1CCCCC1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N1</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">NC</span><span class="o">/</span><span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="o">/</span><span class="n">c2c</span><span class="p">[</span><span class="n">nH</span><span class="p">]</span><span class="n">cn2</span><span class="p">)</span><span class="n">C</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">2</span><span class="n">CCCC</span><span class="p">[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">21</span>
+   <span class="mi">152383</span> <span class="o">|</span> <span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">CC1CCCCC1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N1CCC</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">NCCCCc1c</span><span class="p">[</span><span class="n">nH</span><span class="p">]</span><span class="n">cn1</span>
+   <span class="mi">151837</span> <span class="o">|</span> <span class="n">N</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">CC1CCCCC1</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N1CCC</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">]</span><span class="mi">1</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">NC</span><span class="o">/</span><span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="o">/</span><span class="n">c1c</span><span class="p">[</span><span class="n">nH</span><span class="p">]</span><span class="n">cn1</span>
+<span class="p">(</span><span class="mi">10</span> <span class="n">rows</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">6.181</span> <span class="n">ms</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id9">
+<h4>クエリの調整<a class="headerlink" href="#id9" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#tuning-queries">Tuning queries</a>]</p>
+<p>複雑なSMARTSクエリを構築する必要無しに、部分構造クエリをもう少しコントロールすることができれば、しばしば役に立つでしょう。
+カートリッジの関数<code class="docutils literal"><span class="pre">mol_adjust_query_properties()</span></code>はちょうどこの目的のため使うことができます。
+2,6-二置換ピリジンのクエリを使って、デフォルトの場合どのような動きを示すか例をお見せします：</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select molregno,m from rdk.mols where m@&gt;mol_adjust_query_properties(&#39;*c1cccc(NC(=O)*)n1&#39;) limit 10;</span>
+ <span class="n">molregno</span> <span class="o">|</span>                                             <span class="n">m</span>
+<span class="o">----------+-------------------------------------------------------------------------------------------</span>
+  <span class="mi">1993749</span> <span class="o">|</span> <span class="n">Cn1c</span><span class="p">(</span><span class="n">Nc2c</span><span class="p">(</span><span class="n">Cl</span><span class="p">)</span><span class="n">ccc</span><span class="p">(</span><span class="n">CNC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="n">C</span><span class="p">)(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">)</span><span class="n">c2Cl</span><span class="p">)</span><span class="n">nc2cc</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">Nc3cccc</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="n">F</span><span class="p">)(</span><span class="n">F</span><span class="p">)</span><span class="n">F</span><span class="p">)</span><span class="n">n3</span><span class="p">)</span><span class="n">c</span><span class="p">(</span><span class="n">N3CCC</span><span class="p">(</span><span class="n">F</span><span class="p">)(</span><span class="n">F</span><span class="p">)</span><span class="n">C3</span><span class="p">)</span><span class="n">cc21</span>
+  <span class="mi">1988455</span> <span class="o">|</span> <span class="n">Cc1cccc</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">Nc2cccc</span><span class="p">(</span><span class="n">Oc3cccnc3</span><span class="p">)</span><span class="n">n2</span><span class="p">)</span><span class="n">c1</span>
+  <span class="mi">1870095</span> <span class="o">|</span> <span class="n">COC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">CN</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">c1c</span><span class="p">(</span><span class="n">F</span><span class="p">)</span><span class="n">cccc1F</span><span class="p">)</span><span class="n">c1cccc</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">n1</span>
+  <span class="mi">1870023</span> <span class="o">|</span> <span class="n">CCC</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">(</span><span class="n">CC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">OC</span><span class="p">)</span><span class="n">c1cccc</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">n1</span>
+  <span class="mi">1873944</span> <span class="o">|</span> <span class="n">Cc1ccc</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">CC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">Nc2cccc</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">n2</span><span class="p">)</span><span class="n">cn1</span>
+  <span class="mi">1873968</span> <span class="o">|</span> <span class="n">Cc1cccc</span><span class="p">(</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">CN</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c2ccc</span><span class="p">(</span><span class="o">-</span><span class="n">n3cccc3</span><span class="p">)</span><span class="n">nc2</span><span class="p">)</span><span class="n">n1</span>
+  <span class="mi">1882693</span> <span class="o">|</span> <span class="n">Cc1cccc</span><span class="p">(</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">CCNCc2c</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">nn</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">c2N</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">)</span><span class="n">n1</span>
+  <span class="mi">1882711</span> <span class="o">|</span> <span class="n">COc1c</span><span class="p">(</span><span class="n">CNCCC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">Nc2cccc</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">n2</span><span class="p">)</span><span class="n">c</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">nn1C</span>
+  <span class="mi">1868705</span> <span class="o">|</span> <span class="n">CCOc1cccc</span><span class="p">(</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c2cnc</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">cn2</span><span class="p">)</span><span class="n">n1</span>
+  <span class="mi">1875177</span> <span class="o">|</span> <span class="n">Cc1cccc</span><span class="p">(</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)[</span><span class="n">C</span><span class="o">@</span><span class="nd">@H</span><span class="p">]</span><span class="mi">2</span><span class="n">CCCN2Cc2nc</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">c</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">o2</span><span class="p">)</span><span class="n">n1</span>
+<span class="p">(</span><span class="mi">10</span> <span class="n">rows</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">11.895</span> <span class="n">ms</span>
+</pre></div>
+</div>
+<p>デフォルトでは<code class="docutils literal"><span class="pre">mol_adjust_query_properties()</span></code>は次の変更を分子に施します:</p>
+<ul class="simple">
+<li>ダミーアトムを“any”クエリに変換する</li>
+<li>環の原子全てに級クエリを追加し、置換が与えられているものと合致するようにする</li>
+<li>芳香族性の認識が行われる（まだ行われていない場合）</li>
+</ul>
+<p>追加のJSON引数を与えることで、動きを制御することができます。ここでは追加の級クエリを機能させなくする例を示します：</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select molregno,m from rdk.mols where m@&gt;mol_adjust_query_properties(&#39;*c1cccc(NC(=O)*)n1&#39;,</span>
+<span class="n">chembl_23</span><span class="p">(</span><span class="c1"># &#39;{&quot;adjustDegree&quot;:false}&#39;) limit 10;</span>
+ <span class="n">molregno</span> <span class="o">|</span>                                             <span class="n">m</span>
+<span class="o">----------+-------------------------------------------------------------------------------------------</span>
+  <span class="mi">1993749</span> <span class="o">|</span> <span class="n">Cn1c</span><span class="p">(</span><span class="n">Nc2c</span><span class="p">(</span><span class="n">Cl</span><span class="p">)</span><span class="n">ccc</span><span class="p">(</span><span class="n">CNC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="n">C</span><span class="p">)(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">)</span><span class="n">c2Cl</span><span class="p">)</span><span class="n">nc2cc</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">Nc3cccc</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="n">F</span><span class="p">)(</span><span class="n">F</span><span class="p">)</span><span class="n">F</span><span class="p">)</span><span class="n">n3</span><span class="p">)</span><span class="n">c</span><span class="p">(</span><span class="n">N3CCC</span><span class="p">(</span><span class="n">F</span><span class="p">)(</span><span class="n">F</span><span class="p">)</span><span class="n">C3</span><span class="p">)</span><span class="n">cc21</span>
+  <span class="mi">1957849</span> <span class="o">|</span> <span class="n">COc1ccc2ncc</span><span class="p">(</span><span class="n">F</span><span class="p">)</span><span class="n">c</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">O</span><span class="p">)</span><span class="n">C3CCC</span><span class="p">(</span><span class="n">NCc4nc5c</span><span class="p">(</span><span class="n">cc4F</span><span class="p">)</span><span class="n">OCC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N5</span><span class="p">)</span><span class="n">CO3</span><span class="p">)</span><span class="n">c2n1</span>
+  <span class="mi">1959611</span> <span class="o">|</span> <span class="n">O</span><span class="o">=</span><span class="n">C1COc2ccc</span><span class="p">(</span><span class="n">CNC3CCN</span><span class="p">(</span><span class="n">CCn4c</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">ccc5ncc</span><span class="p">(</span><span class="n">OCc6cccnn6</span><span class="p">)</span><span class="n">cc54</span><span class="p">)</span><span class="n">CC3</span><span class="p">)</span><span class="n">nc2N1</span>
+  <span class="mi">1988455</span> <span class="o">|</span> <span class="n">Cc1cccc</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">Nc2cccc</span><span class="p">(</span><span class="n">Oc3cccnc3</span><span class="p">)</span><span class="n">n2</span><span class="p">)</span><span class="n">c1</span>
+  <span class="mi">1870095</span> <span class="o">|</span> <span class="n">COC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">CN</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">c1c</span><span class="p">(</span><span class="n">F</span><span class="p">)</span><span class="n">cccc1F</span><span class="p">)</span><span class="n">c1cccc</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">n1</span>
+  <span class="mi">1870023</span> <span class="o">|</span> <span class="n">CCC</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">(</span><span class="n">CC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">OC</span><span class="p">)</span><span class="n">c1cccc</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">n1</span>
+  <span class="mi">1873944</span> <span class="o">|</span> <span class="n">Cc1ccc</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">CC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">Nc2cccc</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">n2</span><span class="p">)</span><span class="n">cn1</span>
+  <span class="mi">1873968</span> <span class="o">|</span> <span class="n">Cc1cccc</span><span class="p">(</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">CN</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c2ccc</span><span class="p">(</span><span class="o">-</span><span class="n">n3cccc3</span><span class="p">)</span><span class="n">nc2</span><span class="p">)</span><span class="n">n1</span>
+  <span class="mi">1882693</span> <span class="o">|</span> <span class="n">Cc1cccc</span><span class="p">(</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">CCNCc2c</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">nn</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">c2N</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">)</span><span class="n">n1</span>
+  <span class="mi">1882711</span> <span class="o">|</span> <span class="n">COc1c</span><span class="p">(</span><span class="n">CNCCC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">Nc2cccc</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">n2</span><span class="p">)</span><span class="n">c</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">nn1C</span>
+<span class="p">(</span><span class="mi">10</span> <span class="n">rows</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">10.780</span> <span class="n">ms</span>
+</pre></div>
+</div>
+<p>あるいは、環構造の原子にもダミー（鎖状構造の原子と結合しているもの）にも追加の級クエリを付加しない例を示します:</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select molregno,m from rdk.mols where m@&gt;mol_adjust_query_properties(&#39;*c1cccc(NC(=O)*)n1&#39;,</span>
+<span class="n">chembl_23</span><span class="p">(</span><span class="c1"># &#39;{&quot;adjustDegree&quot;:true,&quot;adjustDegreeFlags&quot;:&quot;IGNORERINGS|IGNOREDUMMIES&quot;}&#39;) limit 10;</span>
+ <span class="n">molregno</span> <span class="o">|</span>                                             <span class="n">m</span>
+<span class="o">----------+-------------------------------------------------------------------------------------------</span>
+  <span class="mi">1993749</span> <span class="o">|</span> <span class="n">Cn1c</span><span class="p">(</span><span class="n">Nc2c</span><span class="p">(</span><span class="n">Cl</span><span class="p">)</span><span class="n">ccc</span><span class="p">(</span><span class="n">CNC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="n">C</span><span class="p">)(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">)</span><span class="n">c2Cl</span><span class="p">)</span><span class="n">nc2cc</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">Nc3cccc</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="n">F</span><span class="p">)(</span><span class="n">F</span><span class="p">)</span><span class="n">F</span><span class="p">)</span><span class="n">n3</span><span class="p">)</span><span class="n">c</span><span class="p">(</span><span class="n">N3CCC</span><span class="p">(</span><span class="n">F</span><span class="p">)(</span><span class="n">F</span><span class="p">)</span><span class="n">C3</span><span class="p">)</span><span class="n">cc21</span>
+  <span class="mi">1957849</span> <span class="o">|</span> <span class="n">COc1ccc2ncc</span><span class="p">(</span><span class="n">F</span><span class="p">)</span><span class="n">c</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">C</span><span class="nd">@H</span><span class="p">](</span><span class="n">O</span><span class="p">)</span><span class="n">C3CCC</span><span class="p">(</span><span class="n">NCc4nc5c</span><span class="p">(</span><span class="n">cc4F</span><span class="p">)</span><span class="n">OCC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N5</span><span class="p">)</span><span class="n">CO3</span><span class="p">)</span><span class="n">c2n1</span>
+  <span class="mi">1959611</span> <span class="o">|</span> <span class="n">O</span><span class="o">=</span><span class="n">C1COc2ccc</span><span class="p">(</span><span class="n">CNC3CCN</span><span class="p">(</span><span class="n">CCn4c</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">ccc5ncc</span><span class="p">(</span><span class="n">OCc6cccnn6</span><span class="p">)</span><span class="n">cc54</span><span class="p">)</span><span class="n">CC3</span><span class="p">)</span><span class="n">nc2N1</span>
+  <span class="mi">1988455</span> <span class="o">|</span> <span class="n">Cc1cccc</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">Nc2cccc</span><span class="p">(</span><span class="n">Oc3cccnc3</span><span class="p">)</span><span class="n">n2</span><span class="p">)</span><span class="n">c1</span>
+  <span class="mi">1873944</span> <span class="o">|</span> <span class="n">Cc1ccc</span><span class="p">(</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">N</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">CC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">Nc2cccc</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">n2</span><span class="p">)</span><span class="n">cn1</span>
+  <span class="mi">1873968</span> <span class="o">|</span> <span class="n">Cc1cccc</span><span class="p">(</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">CN</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c2ccc</span><span class="p">(</span><span class="o">-</span><span class="n">n3cccc3</span><span class="p">)</span><span class="n">nc2</span><span class="p">)</span><span class="n">n1</span>
+  <span class="mi">1882693</span> <span class="o">|</span> <span class="n">Cc1cccc</span><span class="p">(</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">CCNCc2c</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">nn</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">c2N</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">C</span><span class="p">)</span><span class="n">n1</span>
+  <span class="mi">1882711</span> <span class="o">|</span> <span class="n">COc1c</span><span class="p">(</span><span class="n">CNCCC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">Nc2cccc</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">n2</span><span class="p">)</span><span class="n">c</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">nn1C</span>
+  <span class="mi">1884388</span> <span class="o">|</span> <span class="n">Cc1noc</span><span class="p">(</span><span class="n">COCC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">Nc2ccc</span><span class="p">(</span><span class="n">Br</span><span class="p">)</span><span class="n">c</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">n2</span><span class="p">)</span><span class="n">n1</span>
+  <span class="mi">1868705</span> <span class="o">|</span> <span class="n">CCOc1cccc</span><span class="p">(</span><span class="n">NC</span><span class="p">(</span><span class="o">=</span><span class="n">O</span><span class="p">)</span><span class="n">c2cnc</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="n">cn2</span><span class="p">)</span><span class="n">n1</span>
+<span class="p">(</span><span class="mi">10</span> <span class="n">rows</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">12.827</span> <span class="n">ms</span>
+</pre></div>
+</div>
+<p>利用可能なオプションは以下の通りです:</p>
+<ul class="simple">
+<li><strong>adjustDegree</strong> (default: true) :
+入力の原子の級とマッチするようにクエリを付与する</li>
+<li><strong>adjustDegreeFlags</strong> (default: ADJUST_IGNOREDUMMIES |
+ADJUST_IGNORECHAINS) 級が調整されている場所をコントロールする</li>
+<li><strong>adjustRingCount</strong> (default: false) :
+入力の環構造の数にマッチするようにクエリを付与する</li>
+<li><strong>adjustRingCountFlags</strong> (default: ADJUST_IGNOREDUMMIES |
+ADJUST_IGNORECHAINS) 環構造の数が調整されている場所をコントロールする</li>
+<li><strong>makeDummiesQueries</strong> (default: true) :
+入力構造のダミーアトムをany-atomクエリに変換する</li>
+<li><strong>aromatizeIfPossible</strong> (default: true) :
+入力構造に芳香族性を認識するアルゴリズムの処理を行う（注:
+SMILESから構築された分子はいつも芳香族の認識処理が行われているので、これは多くの場合余分な処理です）</li>
+<li><strong>makeBondsGeneric</strong> (default: false) :
+結合をany-bondクエリに変換する</li>
+<li><strong>makeBondsGenericFlags</strong> (default: false) :
+どの結合を一般的なものにするかコントロールする</li>
+<li><strong>makeAtomsGeneric</strong> (default: false) :
+原子をany-atomクエリに変換する</li>
+<li><strong>makeAtomsGenericFlags</strong> (default: false) :
+どの原子を一般的なものとするかコントロールする</li>
+</ul>
+<p>上で述べた、特定のオプションが適用されている場所をコントロールするさまざまな<code class="docutils literal"><span class="pre">Flags</span></code>引数は,
+下のリストにある操作を<code class="docutils literal"><span class="pre">|</span></code>記号で連結することで構築されています。</p>
+<ul class="simple">
+<li><strong>IGNORENONE</strong> : 操作を全ての原子に適用する</li>
+<li><strong>IGNORERINGS</strong> : 環構造の原子に操作を適用しない</li>
+<li><strong>IGNORECHAINS</strong> : 鎖状構造の原子に操作を適用しない</li>
+<li><strong>IGNOREDUMMIES</strong> : ダミー原子に操作を適用しない</li>
+<li><strong>IGNORENONDUMMIES</strong> : 非ダミー原子に操作を適用しない</li>
+<li><strong>IGNOREALL</strong> : anyアトムに操作を適用しない</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id10">
+<h3>類似度検索<a class="headerlink" href="#id10" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#similarity-searches">Similarity searches</a>]</p>
+<p>基本的な類似度検索:</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select count(*) from rdk.fps where mfp2%morganbv_fp(&#39;Cc1ccc2nc(-c3ccc(NC(C4N(C(c5cccs5)=O)CCC4)=O)cc3)sc2c1&#39;);</span>
+ <span class="n">count</span>
+<span class="o">-------</span>
+    <span class="mi">67</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">177.579</span> <span class="n">ms</span>
+</pre></div>
+</div>
+<p>一般的に我々は、付随するSMILESと一緒に、近傍の分子のソートされた一覧を見つけ出したいと思っています。
+そのような場合、このSQL関数をつかうと簡単にできます。</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span>chembl_23=# create or replace function get_mfp2_neighbors(smiles text)
+    returns table(molregno integer, m mol, similarity double precision) as
+  $$
+  select molregno,m,tanimoto_sml(morganbv_fp(mol_from_smiles($1::cstring)),mfp2) as similarity
+  from rdk.fps join rdk.mols using (molregno)
+  where morganbv_fp(mol_from_smiles($1::cstring))%mfp2
+  order by morganbv_fp(mol_from_smiles($1::cstring))&lt;%&gt;mfp2;
+  $$ language sql stable ;
+CREATE FUNCTION
+Time: 0.856 ms
+chembl_23=# select * from get_mfp2_neighbors(&#39;Cc1ccc2nc(-c3ccc(NC(C4N(C(c5cccs5)=O)CCC4)=O)cc3)sc2c1&#39;) limit 10;
+ molregno |                             m                              |    similarity
+----------+------------------------------------------------------------+-------------------
+   471319 | Cc1ccc2nc(-c3ccc(NC(=O)C4CCN(S(=O)(=O)c5cccs5)C4)cc3)sc2c1 | 0.638888888888889
+  1032469 | O=C(Nc1nc2ccc(Cl)cc2s1)[C@@H]1CCCN1C(=O)c1cccs1            | 0.623188405797101
+   751668 | COc1ccc2nc(NC(=O)[C@@H]3CCCN3C(=O)c3cccs3)sc2c1            | 0.619718309859155
+   471318 | Cc1ccc2nc(-c3ccc(NC(=O)C4CN(S(=O)(=O)c5cccs5)C4)cc3)sc2c1  | 0.611111111111111
+   740754 | Cc1ccc(NC(=O)C2CCCN2C(=O)c2cccs2)cc1C                      | 0.606060606060606
+   732905 | O=C(Nc1ccc(S(=O)(=O)N2CCCC2)cc1)C1CCCN1C(=O)c1cccs1        | 0.602941176470588
+  1087495 | Cc1ccc(NC(=O)C2CCCN2C(=O)c2cccs2)c(C)c1                    | 0.597014925373134
+   471462 | CCS(=O)(=O)N1CCC(C(=O)Nc2ccc(-c3nc4ccc(C)cc4s3)cc2)CC1     | 0.585714285714286
+   810850 | Cc1cc(C)n(-c2ccc(NC(=O)C3CCCCN3C(=O)c3cccs3)cc2)n1         | 0.583333333333333
+  1224407 | O=C(Nc1cccc(S(=O)(=O)N2CCCC2)c1)C1CCCN1C(=O)c1cccs1        | 0.579710144927536
+(10 rows)
+
+Time: 28.909 ms
+chembl_23=# select * from get_mfp2_neighbors(&#39;Cc1ccc2nc(N(C)CC(=O)O)sc2c1&#39;) limit 10;
+ molregno |                           m                           |    similarity
+----------+-------------------------------------------------------+-------------------
+  1044892 | Cc1ccc2nc(N(CCN(C)C)C(=O)c3cc(Cl)sc3Cl)sc2c1          | 0.518518518518518
+  1040496 | Cc1ccc2nc(N(CCCN(C)C)C(=O)CCc3ccccc3)sc2c1            | 0.517857142857143
+  1049393 | Cc1ccc2nc(N(CCCN(C)C)C(=O)CS(=O)(=O)c3ccccc3)sc2c1    | 0.517857142857143
+   441378 | Cc1ccc2nc(NC(=O)CCC(=O)O)sc2c1                        | 0.510204081632653
+  1047691 | Cc1ccc(S(=O)(=O)CC(=O)N(CCCN(C)C)c2nc3ccc(C)cc3s2)cc1 | 0.509090909090909
+   911501 | Cc1ccc2nc(N(CCN(C)C)C(=O)c3cc(Cl)sc3Cl)sc2c1.Cl       | 0.509090909090909
+  1042958 | Cc1ccc2nc(N(CCN(C)C)C(=O)c3ccc4ccccc4c3)sc2c1         | 0.509090909090909
+   775269 | Cc1ccc2nc(N(CCCN(C)C)C(=O)CCc3ccccc3)sc2c1.Cl         | 0.508771929824561
+  1045663 | Cc1ccc2nc(N(CCCN(C)C)C(=O)COc3ccc(Cl)cc3)sc2c1        |               0.5
+  1015485 | Cc1ccc2nc(N(Cc3cccnc3)C(=O)Cc3ccccc3)sc2c1            |               0.5
+(10 rows)
+
+Time: 41.623 ms
+</pre></div>
+</div>
+<div class="section" id="id11">
+<h4>類似度のカットオフの調整<a class="headerlink" href="#id11" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#adjusting-the-similarity-cutoff">Adjusting the similarity cutoff</a>]</p>
+<p>デフォルトでは類似度検索で返される最小の類似度は0.5です。
+この値はrdkit.tanimoto_threshold（及びrdkit.dice_threshold）構成変数により調整することができます:</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select count(*) from get_mfp2_neighbors(&#39;Cc1ccc2nc(N(C)CC(=O)O)sc2c1&#39;);</span>
+ <span class="n">count</span>
+<span class="o">-------</span>
+    <span class="mi">20</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">181.438</span> <span class="n">ms</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># set rdkit.tanimoto_threshold=0.7;</span>
+<span class="n">SET</span>
+<span class="n">Time</span><span class="p">:</span> <span class="mf">0.047</span> <span class="n">ms</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select count(*) from get_mfp2_neighbors(&#39;Cc1ccc2nc(N(C)CC(=O)O)sc2c1&#39;);</span>
+ <span class="n">count</span>
+<span class="o">-------</span>
+     <span class="mi">0</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">161.228</span> <span class="n">ms</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># set rdkit.tanimoto_threshold=0.6;</span>
+<span class="n">SET</span>
+<span class="n">Time</span><span class="p">:</span> <span class="mf">0.045</span> <span class="n">ms</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select count(*) from get_mfp2_neighbors(&#39;Cc1ccc2nc(N(C)CC(=O)O)sc2c1&#39;);</span>
+ <span class="n">count</span>
+<span class="o">-------</span>
+     <span class="mi">1</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">184.275</span> <span class="n">ms</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># set rdkit.tanimoto_threshold=0.5;</span>
+<span class="n">SET</span>
+<span class="n">Time</span><span class="p">:</span> <span class="mf">0.055</span> <span class="n">ms</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select count(*) from get_mfp2_neighbors(&#39;Cc1ccc2nc(N(C)CC(=O)O)sc2c1&#39;);</span>
+ <span class="n">count</span>
+<span class="o">-------</span>
+    <span class="mi">20</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">181.100</span> <span class="n">ms</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="mcs">
+<h3>MCSコードの使い方<a class="headerlink" href="#mcs" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#using-the-mcs-code">Using the MCS Code</a>]</p>
+<p>最も簡単なMCSコードの使い方は、分子のグループから最大共通部分構造を見つけ出すことです:</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select fmcs(m::text) from rdk.mols join compound_records using (molregno) where doc_id=4;</span>
+                                  <span class="n">fmcs</span>
+<span class="o">------------------------------------------------------------------------</span>
+ <span class="p">[</span><span class="c1">#6](-[#6]-[#7]-[#6]-[#6](-,:[#6])-,:[#6])-,:[#6]-,:[#6]-,:[#6]-,:[#6]</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">31.041</span> <span class="n">ms</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select fmcs(m::text) from rdk.mols join compound_records using (molregno) where doc_id=5;</span>
+                                                                   <span class="n">fmcs</span>
+<span class="o">------------------------------------------------------------------------------------------------------------------------------------------</span>
+ <span class="p">[</span><span class="c1">#6]-[#6](=[#8])-[#7]-[#6](-[#6](=[#8])-[#7]1-[#6]-[#6]-[#6]-[#6]-1-[#6](=[#8])-[#7]-[#6](-[#6](=[#8])-[#8])-[#6]-[#6])-[#6](-[#6])-[#6]</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">705.535</span> <span class="n">ms</span>
+</pre></div>
+</div>
+<p>同じことがSMILESのカラムでできます：</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select fmcs(canonical_smiles) from compound_structures join compound_records using (molregno) where doc_id=4;</span>
+                                  <span class="n">fmcs</span>
+<span class="o">------------------------------------------------------------------------</span>
+ <span class="p">[</span><span class="c1">#6](-[#7]-[#6]-[#6]-,:[#6]-,:[#6]-,:[#6]-,:[#6])-[#6](-,:[#6])-,:[#6]</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">128.879</span> <span class="n">ms</span>
+</pre></div>
+</div>
+<p>このページを書いている時点（2017_03リリース）では幾分骨の折れる作業ですが、パラメータのいくつかをFMCSアルゴリズムに合わせることも可能です。</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select fmcs_smiles(str,&#39;{&quot;Threshold&quot;:0.8}&#39;) from</span>
+<span class="n">chembl_23</span><span class="o">-</span><span class="c1">#    (select string_agg(m::text,&#39; &#39;) as str from rdk.mols</span>
+<span class="n">chembl_23</span><span class="p">(</span><span class="c1">#    join compound_records using (molregno) where doc_id=4) as str ;</span>
+
+                                                                           <span class="n">fmcs_smiles</span>
+<span class="o">------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+ <span class="p">[</span><span class="c1">#6]-[#6]-[#8]-[#6](-[#6](=[#8])-[#7]-[#6](-[#6])-[#6](-,:[#6])-,:[#6])-[#6](-[#8])-[#6](-[#8])-[#6](-[#8]-[#6]-[#6])-[#6]-[#7]-[#6](-[#6])-[#6](-,:[#6])-,:[#6]</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">9673.949</span> <span class="n">ms</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1">#</span>
+<span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select fmcs_smiles(str,&#39;{&quot;AtomCompare&quot;:&quot;Any&quot;}&#39;) from</span>
+<span class="n">chembl_23</span><span class="o">-</span><span class="c1">#    (select string_agg(m::text,&#39; &#39;) as str from rdk.mols</span>
+<span class="n">chembl_23</span><span class="p">(</span><span class="c1">#    join compound_records using (molregno) where doc_id=4) as str ;</span>
+                                                                              <span class="n">fmcs_smiles</span>
+<span class="o">------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+ <span class="p">[</span><span class="c1">#6]-,:[#6,#7]-[#8,#6]-[#6,#7](-[#6,#8]-[#7,#6]-,:[#6,#7]-,:[#6,#7]-,:[#7,#6]-,:[#6])-[#6,#7]-[#6]-[#6](-[#8,#6]-[#6])-[#6,#7]-[#7,#6]-[#6]-,:[#6,#8]-,:[#7,#6]-,:[#6]</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">304.332</span> <span class="n">ms</span>
+</pre></div>
+</div>
+<p><em>注</em> <code class="docutils literal"><span class="pre">&quot;AtomCompare&quot;:&quot;Any&quot;</span></code>と1.0よりも小さい<code class="docutils literal"><span class="pre">&quot;Threshold&quot;</span></code>の組み合わせは、極めて一般的な検索となり、とても長い検索時間がかかるという結果になりうる可能性があります。
+この組み合わせを使う場合は<code class="docutils literal"><span class="pre">&quot;Tmieout&quot;</span></code>を使うことを推奨します:</p>
+<div class="code sql highlight-default"><div class="highlight"><pre><span></span><span class="n">chembl_23</span><span class="o">=</span><span class="c1"># select fmcs_smiles(str,&#39;{&quot;AtomCompare&quot;:&quot;Any&quot;,&quot;CompleteRingsOnly&quot;:true,&quot;Threshold&quot;:0.8,&quot;Timeout&quot;:60}&#39;) from</span>
+<span class="n">chembl_23</span><span class="o">-</span><span class="c1">#    (select string_agg(m::text,&#39; &#39;) as str from rdk.mols</span>
+<span class="n">chembl_23</span><span class="p">(</span><span class="c1">#    join compound_records using (molregno) where doc_id=3) as str ;</span>
+
+<span class="n">WARNING</span><span class="p">:</span>  <span class="n">findMCS</span> <span class="n">timed</span> <span class="n">out</span><span class="p">,</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">maximal</span>
+                                                                                          <span class="n">fmcs_smiles</span>
+
+<span class="o">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="o">----------------------</span>
+ <span class="p">[</span><span class="c1">#8]=[#6](-[#7]-[#6]1:[#6]:[#6]:[#6](:[#6]:[#6]:1)-[#6](=[#8])-[#7]1-[#6]-[#6]-[#6]-[#6,#7]-[#6]2:[#6]-1:[#6]:[#6]:[#16]:2)-[#6]1:[#6]:[#6]:[#6]:[#6]:[#6]:1-[#6]1:[#6]:</span>
+<span class="p">[</span><span class="c1">#6]:[#6]:[#6]:[#6]:1</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+
+<span class="n">Time</span><span class="p">:</span> <span class="mf">60479.753</span> <span class="n">ms</span>
+</pre></div>
+</div>
+<p>利用可能なパラメータとデフォルトの値は以下の通りです:</p>
+<ul class="simple">
+<li>MaximizeBonds (true)</li>
+<li>Threshold (1.0)</li>
+<li>Timeout (-1, no timeout)</li>
+<li>MatchValences (false)</li>
+<li>MatchChiralTag (false) :  原子に適用</li>
+<li>RingMatchesRingOnly (false)</li>
+<li>CompleteRingsOnly (false)</li>
+<li>MatchStereo (false) : 結合に適用</li>
+<li>AtomCompare (“Elements”) : 選択肢は“Elements”、“Isotopes”あるいは“Any”</li>
+<li>BondCompare (“Order”) : 選択肢は“Order”、“OrderExact”あるいは“Any”</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id12">
+<h2>レファレンスガイド<a class="headerlink" href="#id12" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#reference-guide">Reference Guid</a>]</p>
+<div class="section" id="id13">
+<h3>新しい型<a class="headerlink" href="#id13" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#new-types">New Types</a>]</p>
+<ul class="simple">
+<li>mol : rdkitにおける分子（rdkit molecule）。
+SMILESから直接、型を変更することで作ることができます。例えば：<code class="docutils literal"><span class="pre">‘c1ccccc1’::mol</span></code>　は、SMILES<code class="docutils literal"><span class="pre">‘c1ccccc1’</span></code> で表される分子を作成します。</li>
+<li>qmol
+:クエリ機能を含むrdkitの分子(すなわち、SMARTSから構築されたもの)。SMARTSから直接、型を変更することで作ることができます。
+例えば:<code class="docutils literal"><span class="pre">‘c1cccc[c,n]1’::qmol</span></code>はSMARTS<code class="docutils literal"><span class="pre">‘c1cccc[c,n]1’</span></code>で表されるクエリ分子を作成します。</li>
+<li>sfp : スパースカウントベクトルフィンガープリント（sparse count vector fingerprint）（C++とPythonのSparseIntVect）</li>
+<li>bfp : ビットベクトルフィンガープリント（bit vector fingerprint）（C++とPythonのExplicitBitVect）</li>
+</ul>
+</div>
+<div class="section" id="id14">
+<h3>パラメータ<a class="headerlink" href="#id14" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#parameters">Parameters</a>]</p>
+<ul class="simple">
+<li>rdkit.tanimoto_threshold :
+タニモト類似度演算子のための閾値。タニモト類似度を使った検索では、少なくともこの閾値以上の類似度をもつ結果のみ返されます。</li>
+<li>rdkit.dice_threshold :
+Dice類似度演算子のための閾値。Dice類似度を使った検索では、少なくともこの閾値以上の類似度をもつ結果のみ返されます。</li>
+<li>rdkit.do_chiral_sss :
+部分構造マッチングで立体化学が使われているかいないかを切り替えます。（2013_03リリースから利用可能）</li>
+<li>rdkit.sss_fp_size :
+部分構造検索スクリーニングで使われるフィンガープリントのサイズ（ビット数）。</li>
+<li>rdkit.morgan_fp_size : Morganフィンガープリントのサイズ（ビット数）。</li>
+<li>rdkit.featmorgan_fp_size :
+FeatMorganフィンガープリントのサイズ（ビット数）。</li>
+<li>rdkit.layered_fp_size :
+層化（layered）フィンガープリントのサイズ（ビット数）</li>
+<li>rdkit.rdkit_fp_size : RDKitフィンガープリントのサイズ（ビット数）</li>
+<li>rdkit.torsion_fp_size :
+トポロジカルトーションビットベクトルフィンガープリントのサイズ（ビット数）</li>
+<li>rdkit.atompair_fp_size :
+アトムペアビットベクトルフィンガープリントのサイズ（ビット数）</li>
+<li>rdkit.avalon_fp_size : Avalonフィンガープリントのサイズ（ビット数）</li>
+</ul>
+</div>
+<div class="section" id="id15">
+<h3>演算子<a class="headerlink" href="#id15" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#operators">Operators</a>]</p>
+<div class="section" id="id16">
+<h4>類似度検索<a class="headerlink" href="#id16" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#similarity-search">Similarity search</a>]</p>
+<ul class="simple">
+<li>% :
+タニモト類似度を使った検索で使われる演算子。２つのフィンガープリント（sfp値２つ、あるいはbfp値２つ）の間のタニモト類似度が閾値
+rdkit.tanimoto_threshold を超えているか否かを返します。</li>
+<li># :
+Dice類似度を使った検索で使われる演算子。２つのフィンガープリント（sfp値２つ、あるいはbfp値２つ）の間のDice類似度が閾値
+rdkit.dice_threshold を超えているか否かを返します。</li>
+<li>&lt;%&gt; :
+タニモト k近傍法検索に使われます（近傍の分子の並べ替えられたリストを返すために使われます）。</li>
+<li>&lt;#&gt; :
+Dice k近傍法検索に使われます（近傍の分子の並べ替えられたリストを返すために使われます）。</li>
+</ul>
+</div>
+<div class="section" id="id17">
+<h4>部分構造検索と正確な構造の検索<a class="headerlink" href="#id17" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#substructure-and-exact-structure-search">Substructure and exact strucure search</a>]</p>
+<ul class="simple">
+<li>&#64;&gt; :
+部分構造検索の演算子。演算子の右側におかれたmolあるいはqmolが、左側のmolの部分構造であるか否かを返します。</li>
+<li>&lt;&#64; :
+部分構造検索の演算子。演算子の左側におかれたmolあるいはqmolが、右側のmolの部分構造であるか否かを返します。</li>
+<li>&#64;= : ２つの分子が同一であるか否かを返します。</li>
+</ul>
+</div>
+<div class="section" id="id18">
+<h4>分子の比較<a class="headerlink" href="#id18" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#molecule-comparison">Molecule comparison</a>]</p>
+<ul class="simple">
+<li>&lt; : 左側のmolが右側もmolよりも小さいか否かを返します。</li>
+<li>&gt; : 左側のmolが右側もmolよりも大きいか否かを返します。</li>
+<li>= : 左側のmolが右側のmolと等しいか否かを返します。</li>
+<li>&lt;= : 左側のmolが右側のmol以下であるか否かを返します。</li>
+<li>&gt;= : 左側のmolが右側のmol以上であるか否かを返します。</li>
+</ul>
+<p><em>注意</em>
+２つの分子は次の比較を順番に行うことで比べられます。より後の順番の比較は、それより前の値が等しい時だけ行われます:</p>
+<p># Number of atoms # Number of bonds # Molecular weight # Number of rings</p>
+<p>上記の全てが同じ値で、２つ目の分子が最初の分子の部分構造の場合、分子は等しいと宣言されます。さもなくば（そうなるべきではありませんが）最初の分子は、２番目よりも小さいと勝手に定義されます。</p>
+<p>カートリッジには他にも演算子が定義されていますが、これらは内部の目的のためだけに使われます。</p>
+</div>
+</div>
+<div class="section" id="id19">
+<h3>関数<a class="headerlink" href="#id19" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#functions">Functions</a>]</p>
+<div class="section" id="id20">
+<h4>フィンガープリント関連<a class="headerlink" href="#id20" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#fingerprint-related">Fingerprint Related</a>]</p>
+<div class="section" id="id21">
+<h5>フィンガープリントの生成<a class="headerlink" href="#id21" title="このヘッドラインへのパーマリンク">¶</a></h5>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#generating-fingerprints">Generating fingerprints</a>]</p>
+<ul class="simple">
+<li>morgan_fp(mol,int default 2) :
+結合関係の不変量を使って求めた、カウントベースのMorganフィンガープリントであるsfpを返します。２つ目の引数は半径を与えます。ECFPに類似したフィンガープリントです。</li>
+<li>morganbv_fp(mol,int default 2) :
+結合関係の不変量を使って求めた、ビットベクトルのMorganフィンガープリントであるbfpを返します。２つ目の引数は半径を与えます。ECFPに類似したフィンガープリントです。</li>
+<li>featmorgan_fp(mol,int default 2) :
+化学的特徴の不変量を使って求めた、カウントベースのMorganフィンガープリントであるsfpを返します。２つ目の引数は半径を与えます。FCFPに類似したフィンガープリントです。</li>
+<li>featmorganbv_fp(mol,int default 2) :
+化学的特徴の不変量を使って求めた、ビットベクトルのMorganフィンガープリントであるbfpを返します。２つ目の引数は半径を与えます。FCFPに類似したフィンガープリントです。</li>
+<li>rdkit_fp(mol) :
+RDKitフィンガープリントのbfpを返します。ハッシュ化された分子のサブグラフをつかったDaylightフィンガープリントです。.</li>
+<li>atompair_fp(mol) :
+カウントベースのアトムペアフィンガープリントであるsfpを返します。</li>
+<li>atompairbv_fp(mol) :
+ビットベクトルのアトムペアフィンガープリントであるbfpを返します。</li>
+<li>torsion_fp(mol) :
+カウントベースのトポロジカルトーションフィンガープリントであるsfpを返します。</li>
+<li>torsionbv_fp(mol) :
+ビットベクトルのトポロジカルトーションフィンガープリントであるbfpを返します。</li>
+<li>layered_fp(mol) :
+層化（layered）フィンガープリントであるbfpを返します。ハッシュ化された分子のサブグラフを使った実験的な部分構造のフィンガープリントです。</li>
+<li>maccs_fp(mol) :
+MACCSフィンガープリントであるbfpを返します（<em>2013_01リリースから利用可能</em>)。</li>
+</ul>
+</div>
+<div class="section" id="id22">
+<h5>フィンガープリントの取り扱い<a class="headerlink" href="#id22" title="このヘッドラインへのパーマリンク">¶</a></h5>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#working-with-fingerprints">Working with fingerpritns</a>]</p>
+<ul class="simple">
+<li>tanimoto_sml(fp,fp) :
+同じタイプの２つのフィンガープリント（sfp値2つかbfp値２つ）の間のタニモト類似度を返します。</li>
+<li>dice_sml(fp,fp) :
+同じタイプの２つのフィンガープリント（sfp値2つかbfp値２つ）の間のDice類似度を返します。</li>
+<li>size(bfp) : bfp（のビット数）の長さを返します。</li>
+<li>add(sfp,sfp) :
+２つのsfp引数の要素ごとの足し算によって作成される１つのsfpを返します。</li>
+<li>subtract(sfp,sfp) :
+２つのsfp引数の要素ごとの引き算によって作成される１つのsfpを返します。</li>
+<li>all_values_lt(sfp,int) :
+sfpの引数の全ての要素が、整数の引数よりも小さいか否かを示すブール値を返します。</li>
+<li>all_values_gt(sfp,int) :
+sfpの引数の全ての要素が、整数の引数よりも大きいか否かを示すブール値を返します。</li>
+</ul>
+</div>
+<div class="section" id="id23">
+<h5>フィンガープリントの入出力<a class="headerlink" href="#id23" title="このヘッドラインへのパーマリンク">¶</a></h5>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#fingerprint-i-o">Fingerprint I/O</a>]</p>
+<ul class="simple">
+<li>bfp_to_binary_text(bfp) :
+他のソフトウェアでRDKitフィンガープリントに変換し直すことができる、フィンガープリントのバイナリ列表現を保存したbytea型を返します。
+（Q3 2012（2012_09）リリースから利用可能）</li>
+<li>bfp_from_binary_text(bytea) :
+フィンガープリントのバイナリ列表現からbfpを作成します。</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id24">
+<h4>分子関連<a class="headerlink" href="#id24" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#molecule-related">Molecule Related</a>]</p>
+<div class="section" id="id25">
+<h5>分子の入出力と妥当性の検証<a class="headerlink" href="#id25" title="このヘッドラインへのパーマリンク">¶</a></h5>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#molecule-i-o-and-validation">Molecule I/O and Validation</a>]</p>
+<ul class="simple">
+<li>is_valid_smiles(smiles) :
+SMILES文字列が妥当なRDKit分子を生成しているか否かを返します。</li>
+<li>is_valid_ctab(ctab) :
+CTAB（mol block）文字列が妥当なRDKit分子を生成しているか否かを返します。</li>
+<li>is_valid_smarts(smarts) :
+SMARTS文字列が妥当なRDKit分子を生成しているか否かを返します。</li>
+<li>is_valid_mol_pkl(bytea) :
+バイナリ列（bytea型）がRDKit分子に変換しなおすことができるか否かを返します。（<em>Q3 2012（2012_09）リリースから利用可能</em>）</li>
+<li>mol_from_smiles(smiles) :
+SMILES文字列に対して分子を返し、分子の構築が失敗した場合はNULLを返します。</li>
+<li>mol_from_smarts(smarts) :
+SMARTS文字列に対して分子を返し、分子の構築が失敗した場合はNULLを返します。</li>
+<li>mol_from_ctab(ctab, bool default false) :
+CTAB（mol block）文字列に対して分子を返し、分子の構築が失敗した場合はNULLを返します。オプションの２つ目の引数は分子の座標を保存するか否かをコントロールします。</li>
+<li>mol_from_pkl(bytea) :
+バイナリ列（bytea型）に対して分子を返し、分子の構築が失敗した場合はNULLを返します。（<em>Q3 2012（2012_09）リリースから利用可能</em>）</li>
+<li>qmol_from_smiles(smiles) :
+SMILES文字列にたいしてクエリ分子を返し、分子の構築が失敗した場合NULLを返します。
+SMILESの中で明示的に表されている水素原子は、水素原子が結合している原子のクエリフィーチャーに変換されます。</li>
+<li>qmol_from_ctab(ctab, bool default false) :
+CTAB（mol block）文字列にたいしてクエリ分子を返し、分子の構築が失敗した場合NULLを返します。
+SMILESの中で明示的に表されている水素原子は、水素原子が結合している原子のクエリフィーチャーに変換されます。
+オプションの２つ目の引数は分子の座標を保存するか否かをコントロールします。</li>
+<li>mol_to_smiles(mol) : 分子のカノニカルSMILESを返します。</li>
+<li>mol_to_smarts(mol) : 分子のSMARTS文字列を返します。</li>
+<li>mol_to_pkl(mol) : 分子のバイナリ列（bytea型）を返します。（<em>Q3 2012（2012_09）リリースから利用可能</em>）</li>
+<li>mol_to_ctab(mol,bool default true) :
+分子のCTAB（mol block）文字列を返します。オプションの２つ目の引数は、座標を持っていない分子に対して２D座標を生成するか否かをコントロールします。</li>
+<li>mol_to_svg(mol,string default ‘’,int default 250, int default 200, string default ‘’) :
+分子の描画を有するSVGを返します。オプションのパラメータは、凡例として使われる文字列、画像の幅、高さ、そして追加のレンダリングについてのパラメータを有するJSONです。（<em>2016_09リリースから利用可能</em>）</li>
+</ul>
+</div>
+<div class="section" id="id26">
+<h5>部分構造操作<a class="headerlink" href="#id26" title="このヘッドラインへのパーマリンク">¶</a></h5>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#substructure-operations">Substructure operations</a>]</p>
+<ul class="simple">
+<li>substruct(mol,mol) :
+２つ目のmolが１つ目の部分構造であるか否かを返します。</li>
+<li>substruct_count(mol,mol,bool default true) :
+２つ目の分子と１つ目の分子の間でマッチしている部分構造の数を返します。３つ目の引数は部分構造のマッチングを重複を除いたユニークなものとするか否かを切り替えます。（<em>2013_03リリースから利用可能</em>）</li>
+<li>mol_adjust_query_properties(mol,string default ‘’) :
+追加のクエリ情報が付加された新しい分子を返します。（2016_09リリースから利用可能）</li>
+</ul>
+</div>
+<div class="section" id="id27">
+<h5>記述子<a class="headerlink" href="#id27" title="このヘッドラインへのパーマリンク">¶</a></h5>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#descriptors">Descriptors</a>]</p>
+<ul class="simple">
+<li>mol_amw(mol) : 分子のAMWを返します。</li>
+<li>mol_logp(mol) : 分子のMOlLogPを返します。</li>
+<li>mol_tpsa(mol) : 分子のトポロジカル極性表面積を返します（<em>Q1 2011（2011_03）リリースから利用可能</em>）。</li>
+<li>mol_fractioncsp3(mol) :
+sp3混成の炭素の割合を返します（<em>2013_03リリースから利用可能</em>）。</li>
+<li>mol_hba(mol) :
+分子のリピンスキーの水素結合アクセプターの数（すなわち、OとNの数）を返します。</li>
+<li>mol_hbd(mol) :
+分子のリピンスキーの水素結合ドナーの数（すなわち、少なくとも１つHをもつOとNの数）を返します。</li>
+<li>mol_numatoms(mol) : 分子に含まれる原子の総数を返します。</li>
+<li>mol_numheavyatoms(mol) : 分子に含まれるヘビーアトムの数を返します。</li>
+<li>mol_numrotatablebonds(mol) :
+分子に含まれる回転可能な結合の数を返します（<em>Q1 2011（2011_03）リリースから利用可能</em>）。</li>
+<li>mol_numheteroatoms(mol) : 分子に含まれるヘテロ原子の数を返します（<em>Q1 2011（2011_03）リリースから利用可能</em>）。</li>
+<li>mol_numrings(mol) : 分子に含まれる環構造の数を返します（<em>Q1 2011（2011_03）リリースから利用可能</em>）。</li>
+<li>mol_numaromaticrings(mol) :
+分子に含まれる芳香環の数を返します（<em>2013_03リリースから利用可能</em>）。</li>
+<li>mol_numaliphaticrings(mol) :
+分子に含まれる脂肪族（少なくとも一つ非芳香族結合をもつ）環構造の数を返します（<em>2013_03リリースから利用可能</em>）。</li>
+<li>mol_numsaturatedrings(mol) :
+分子に含まれる飽和環の数を返します（<em>2013_03リリースから利用可能</em>）。</li>
+<li>mol_numaromaticheterocycles(mol) :
+分子に含まれる芳香族ヘテロ環の数を返します（<em>2013_03リリースから利用可能</em>）。</li>
+<li>mol_numaliphaticheterocycles(mol) :
+分子に含まれる脂肪族（少なくとも一つ非芳香族結合をもつ）環構造の数を返します（<em>2013_03リリースから利用可能</em>）。</li>
+<li>mol_numsaturatedheterocycles(mol) :
+分子に含まれる飽和ヘテロ環の数を返します（<em>2013_03リリースから利用可能</em>）。</li>
+<li>mol_numaromaticcarbocycles(mol) :
+分子に含まれる芳香族炭素環の数を返します（<em>2013_03リリースから利用可能</em>）。</li>
+<li>mol_numaliphaticcarbocycles(mol) :
+分子に含まれる脂肪族（少なくとも一つ非芳香族結合をもつ）炭素環の数を返します（<em>2013_03リリースから利用可能</em>）。</li>
+<li>mol_numsaturatedcarbocycles(mol) :
+分子に含まれる飽和炭素環の数を返します（<em>2013_03リリースから利用可能</em>）。</li>
+<li>mol_inchi(mol) :
+分子のInChIを返します。（<em>2011_06リリースから利用可能で、RDKitがInChIサポートとともにビルドされている必要があります</em>）。</li>
+<li>mol_inchikey(mol) :
+分子のInChI keyを返します。（<em>2011_06リリースから利用可能で、RDKitがInChIサポートとともにビルドされている必要があります</em>）。</li>
+<li>mol_formula(mol,bool default false, bool default true) :
+分子式をもつ文字列を返します。２つ目の引数は分子式に同位体の情報を含むかどうかをコントロールします。
+３つ目の引数は“D”と“T”を、[2H]と[3H]の代わりに使うかどうかをコントロールします。（<em>2014_03リリースから利用可能</em>）</li>
+</ul>
+</div>
+<div class="section" id="id28">
+<h5>結合関係記述子<a class="headerlink" href="#id28" title="このヘッドラインへのパーマリンク">¶</a></h5>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#connectivity-descriptors">Connectivity Desctiptors</a>]</p>
+<ul class="simple">
+<li>mol_chi0v(mol) - mol_chi4v(mol) :
+x=0-4のChiXvの値を返します（<em>2012_01リリースから利用可能</em>）</li>
+<li>mol_chi0n(mol) - mol_chi4n(mol) :
+x=0-4のChiXnの値を返します（<em>2012_01リリースから利用可能</em>）</li>
+<li>mol_kappa1(mol) - mol_kappa3(mol) :
+x=1-3のkappaXの値を返します（<em>2012_01リリースから利用可能</em>）</li>
+<li>mol_numspiroatoms :
+分子に含まれるスピロ原子の数を返します（<em>2015_09リリースから利用可能</em>）</li>
+<li>mol_numbridgeheadatoms :
+分子に含まれる橋頭位の原子の数を返します（<em>2015_09リリースから利用可能</em>）。</li>
+</ul>
+</div>
+<div class="section" id="id29">
+<h5>MCS<a class="headerlink" href="#id29" title="このヘッドラインへのパーマリンク">¶</a></h5>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#mcs">MCS</a>]</p>
+<ul class="simple">
+<li>fmcs(mols) : 分子のセットについてMCSを計算する集合関数</li>
+<li>fmcs_smiles(text, json default ‘’) :
+スペースで区切られたSMILESのセットについてMCSを計算します。オプションのjson引数はMCSコードにパラメータを与えるために使われます。</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id30">
+<h4>その他<a class="headerlink" href="#id30" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#other">Other</a>]</p>
+<ul class="simple">
+<li>rdkit_version() :
+カートリッジのバージョン番号をを持つ文字列を返します。</li>
+</ul>
+<p>カートリッジには他にも演算子が定義されていますが、これらは内部の目的のためだけに使われます。</p>
+</div>
+</div>
+</div>
+<div class="section" id="python">
+<h2>Pythonからカートリッジを使う方法<a class="headerlink" href="#python" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#using-the-cartridge-from-python">Using the Cartridge from Python</a>]</p>
+<p>postgresqlに接続するためのお勧めのアダブタはpyscopg2です（<a class="reference external" href="https://pypi.python.org/pypi/psycopg2">https://pypi.python.org/pypi/psycopg2</a> ）。</p>
+<p>我々のChEMBLのローカルコピーに接続し、基本的な部分構造検索を行った場合の例を示します：</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">database</span><span class="o">=</span><span class="s1">&#39;chembl_16&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">curs</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">curs</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;select * from rdk.mols where m@&gt;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,(</span><span class="s1">&#39;c1cccc2c1nncc2&#39;</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">curs</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+<span class="go">(9830, &#39;CC(C)Sc1ccc(CC2CCN(C3CCN(C(=O)c4cnnc5ccccc54)CC3)CC2)cc1&#39;)</span>
+</pre></div>
+</div>
+<p>各分子に対してSMILESを返します。分子を取得した後で、さらに操作を行いたいなら、postgresqlにpickel形式で分子を返すよう要求するのがより効率的です。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">curs</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;select molregno,mol_send(m) from rdk.mols where m@&gt;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,(</span><span class="s1">&#39;c1cccc2c1nncc2&#39;</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">row</span> <span class="o">=</span> <span class="n">curs</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">row</span>
+<span class="go">(9830, &lt;read-only buffer for 0x...&gt;)</span>
+</pre></div>
+</div>
+<p>これらのpickelは分子に変換することができます。</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit</span> <span class="k">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">Mol</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">&#39;CC(C)Sc1ccc(CC2CCN(C3CCN(C(=O)c4cnnc5ccccc54)CC3)CC2)cc1&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id31">
+<h2>ライセンス<a class="headerlink" href="#id31" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html#license">License</a>]</p>
+<p>この文書の著作権は copyright (C) 2013-2018 by Greg Landrum に所属しています。</p>
+<p>この文書はCreative Commons Attribution-ShareAlike 4.0 Licenseのもとでライセンスされています。
+このライセンスを見るためにはhttp://creativecommons.org/licenses/by-sa/4.0/ にアクセスするか、
+Creative Commons, 543 Howard Street, 5th Floor, San Francisco, California, 94105, USA.　に手紙を送ってください。</p>
+<p>このライセンスの意図はRDKitそのものの意図と似ています。
+簡単に言えば“これを使ってなんでもやりたいことをやっていいですが、私たちの功績にも言及してください”</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">目次</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">RDKitデータベースカートリッジ</a><ul>
+<li><a class="reference internal" href="#id1">このページについて</a></li>
+<li><a class="reference internal" href="#id2">チュートリアル</a><ul>
+<li><a class="reference internal" href="#id3">イントロダクション</a></li>
+<li><a class="reference internal" href="#id4">データベースの作成</a><ul>
+<li><a class="reference internal" href="#id5">環境設定</a></li>
+<li><a class="reference internal" href="#id6">ファイルからデータベースを作成する</a></li>
+<li><a class="reference internal" href="#chembl">ChEMBLの読み込み</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id7">部分構造検索</a><ul>
+<li><a class="reference internal" href="#smarts">SMARTSベースのクエリ</a></li>
+<li><a class="reference internal" href="#id8">立体化学の使用方法</a></li>
+<li><a class="reference internal" href="#id9">クエリの調整</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id10">類似度検索</a><ul>
+<li><a class="reference internal" href="#id11">類似度のカットオフの調整</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mcs">MCSコードの使い方</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id12">レファレンスガイド</a><ul>
+<li><a class="reference internal" href="#id13">新しい型</a></li>
+<li><a class="reference internal" href="#id14">パラメータ</a></li>
+<li><a class="reference internal" href="#id15">演算子</a><ul>
+<li><a class="reference internal" href="#id16">類似度検索</a></li>
+<li><a class="reference internal" href="#id17">部分構造検索と正確な構造の検索</a></li>
+<li><a class="reference internal" href="#id18">分子の比較</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id19">関数</a><ul>
+<li><a class="reference internal" href="#id20">フィンガープリント関連</a><ul>
+<li><a class="reference internal" href="#id21">フィンガープリントの生成</a></li>
+<li><a class="reference internal" href="#id22">フィンガープリントの取り扱い</a></li>
+<li><a class="reference internal" href="#id23">フィンガープリントの入出力</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id24">分子関連</a><ul>
+<li><a class="reference internal" href="#id25">分子の入出力と妥当性の検証</a></li>
+<li><a class="reference internal" href="#id26">部分構造操作</a></li>
+<li><a class="reference internal" href="#id27">記述子</a></li>
+<li><a class="reference internal" href="#id28">結合関係記述子</a></li>
+<li><a class="reference internal" href="#id29">MCS</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id30">その他</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#python">Pythonからカートリッジを使う方法</a></li>
+<li><a class="reference internal" href="#id31">ライセンス</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/The_RDKit_database_cartridge.rst.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>クイック検索</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="検索" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, anonymous.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/The_RDKit_database_cartridge.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

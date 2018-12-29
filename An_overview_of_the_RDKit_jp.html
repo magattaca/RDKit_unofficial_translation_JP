@@ -1,0 +1,402 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ja" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ja" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>RDKitの概要 &mdash; RDKit_unofficial_translation_JP 1.00 ドキュメント</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="インストールの仕方" href="Installation_jp.html" />
+    <link rel="prev" title="このサイトの使い方（日本語版序文）" href="introduction_jp.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> RDKit_unofficial_translation_JP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.00
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction_jp.html">このサイトの使い方（日本語版序文）</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">RDKitの概要</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">RDKitっていったい？</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">ケモインフォマティクスのためのオープンソースのツールキット</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">運営に関する情報</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">沿革</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">他のオープンソースプロジェクトとの統合</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">他のオープソースプロジェクトによる使用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contrib">Contribディレクトリ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">脚注</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">ライセンス</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Installation_jp.html">インストールの仕方</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html">PythonでRDKitを始めよう</a></li>
+<li class="toctree-l1"><a class="reference internal" href="The_RDKit_Book_jp.html">The RDKit Book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RDKit_cookbook_jp.html">RDKitクックブック</a></li>
+<li class="toctree-l1"><a class="reference internal" href="The_RDKit_database_cartridge_jp.html">RDKitデータベースカートリッジ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Backwards_incompatible_changes_jp.html">後方互換性の無い変更</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Supplementary_Text_jp.html">「PythonでRDKitを始めよう」日本語版補遺</a></li>
+<li class="toctree-l1"><a class="reference internal" href="terminology_jp.html">訳語対応集</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">RDKit_unofficial_translation_JP</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>RDKitの概要</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/An_overview_of_the_RDKit_jp.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="rdkit">
+<h1>RDKitの概要<a class="headerlink" href="#rdkit" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Overview.html#an-overview-of-the-rdkit">An overview of the RDKit</a>]</p>
+<div class="section" id="id1">
+<h2>RDKitっていったい？<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Overview.html#what-is-it">What is it?</a>]</p>
+<div class="section" id="id2">
+<h3>ケモインフォマティクスのためのオープンソースのツールキット<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Overview.html#open-source-toolkit-for-cheminformatics">Open source toolkit for cheminformatics</a>]</p>
+<ul class="simple">
+<li>ビジネスフレンドリーなBSDライセンス</li>
+<li>コアデータストラクチャーとアルゴリズムはC++で記載</li>
+<li>Python(2.x および3.x)のラッパーは Boost.Pythonを使って作成</li>
+<li>Java と C# のラッパーはSWIGを使って作成</li>
+<li>2D と 3D で分子を取り扱えます</li>
+<li>機械学習のための記述子を生成</li>
+<li>PostgreSQLのための化合物データベース・カートリッジ</li>
+<li>KNIMEのためのケモインフォマティクスノード (KNIMEコミュニティサイト：<a class="reference external" href="https://www.knime.com/rdkit">https://www.knime.com/rdkit</a> から配布されています)</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h3>運営に関する情報<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Overview.html#operational">Operational</a>]</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.rdkit.org">http://www.rdkit.org</a></li>
+<li>サポート　Mac/Windows/Linux</li>
+<li>6ヶ月ごとにリリース</li>
+<li>Web上の情報：<ul>
+<li>ホームページ： <a class="reference external" href="http://www.rdkit.org">http://www.rdkit.org</a> ドキュメンテーション、リンク</li>
+<li>Github:(https://github.com/rdkit)　ダウンロード、バグ追跡、Gitリポジトリ</li>
+<li>Sourceforge (<a class="reference external" href="http://sourceforge.net/projects/rdkit">http://sourceforge.net/projects/rdkit</a>) メーリングリスト</li>
+<li>ブログ (<a class="reference external" href="https://rdkit.blogspot.com">https://rdkit.blogspot.com</a>) うまく使うための秘訣, 技, 雑多な話題</li>
+<li>チュートリアル (<a class="reference external" href="https://github.com/rdkit/rdkit-tutorials">https://github.com/rdkit/rdkit-tutorials</a>)
+RDKit使用方法のJupyterベースのチュートリアル</li>
+<li>KNIMEとの統合 (<a class="reference external" href="https://github.com/rdkit/knime-rdkit">https://github.com/rdkit/knime-rdkit</a>)
+KNIME向けのRDKit ノード</li>
+<li>メーリングリストは <a class="reference external" href="https://sourceforge.net/p/rdkit/mailman/">https://sourceforge.net/p/rdkit/mailman/</a>
+で、検索可能なアーカイブは<a class="reference external" href="https://www.mail-archive.com/rdkit-discuss&#64;lists.sourceforge.net/">rdkit-discuss</a>と<a class="reference external" href="https://www.mail-archive.com/rdkit-devel&#64;lists.sourceforge.net/">rdkit-devel</a>です</li>
+</ul>
+</li>
+<li>ソーシャルメディア：<ul>
+<li>Twitter: &#64;RDKit_org</li>
+<li>LinkedIn: <a class="reference external" href="https://www.linkedin.com/groups/8192558">https://www.linkedin.com/groups/8192558</a></li>
+<li>Slack: <a class="reference external" href="https://rdkit.slack.com">https://rdkit.slack.com</a>
+(招待が必要です、Gregに連絡してください）</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h3>沿革<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Overview.html#history">History</a>]</p>
+<ul class="simple">
+<li>2000-2006: Rational
+DiscoveryにおいてADME、Tox、生理活性を予測するモデルを作成するために開発され使われていた</li>
+<li>June 2006: ソフトウェアをオープンソース(BSD
+license)としてリリース、Rational Discoveryを閉鎖</li>
+<li>現在まで:
+オープンソースでの開発を継続、Novartis内で使用、Novartisからのコントリビューションはオープンソース版へ反映</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>他のオープンソースプロジェクトとの統合<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Overview.html#integration-with-other-open-source-projects">Integration with other open-source projects</a>]</p>
+<ul class="simple">
+<li><a class="reference external" href="https://www.knime.com/rdkit">KNIME</a>:ワークフローと分析ツール</li>
+<li><a class="reference external" href="https://www.rdkit.org/docs/Cartridge.html">PostgreSQL</a>: 拡張可能なリレーショナルデータベース</li>
+<li><a class="reference external" href="http://django-rdkit.readthedocs.org/en/latest/">Django</a>
+:“締め切りに追われる完璧主義者のためのウェブフレームワーク”</li>
+<li><a class="reference external" href="https://github.com/rvianello/chemicalite">SQLite</a>
+-“世界で最も使われているデータベースエンジン”</li>
+<li><a class="reference external" href="https://github.com/rdkit/org.rdkit.lucene">Lucene</a> :
+テキストサーチエンジン  <a class="footnote-reference" href="#f1" id="id6">[1]</a></li>
+</ul>
+</div>
+<div class="section" id="id7">
+<h2>他のオープソースプロジェクトによる使用<a class="headerlink" href="#id7" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Overview.html#usage-by-other-open-source-projects">Usage by other open-source projects</a>]</p>
+<p>この項目は必然的に最新の情報ではなくなってしまいます。もし他にご存知のプロジェクトがあれば我々に連絡、あるいはプルリクエストをサブミットしてください！</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/schrodinger/gpusimilarity">gpusimilarity</a> -
+フィンガープリント類似性探索のCuda/Thrustによる実装</li>
+<li><a class="reference external" href="https://www.samson-connect.net/">Samson Connect</a> -
+ナノシステムのシミュレーションと適合モデリングのためのソフトウェア</li>
+<li><a class="reference external" href="https://github.com/apahl/mol_frame">mol_frame</a> - DaskとPandas
+DataFrameのための化学構造の取り扱い</li>
+<li><a class="reference external" href="https://github.com/cheminfo/RDKitjs">RDKitjs</a> -
+JavasScriptのためのRDKit機能のポート</li>
+<li><a class="reference external" href="https://deepchem.io/">DeepChem</a> -
+化学のためのディープラーニングのためのpythonライブラリ</li>
+<li><a class="reference external" href="https://github.com/rdkit/mmpdb">mmpdb</a> - Matched molecular pair
+データベースの生成と分析</li>
+<li><a class="reference external" href="https://github.com/rdkit/CheTo">CheTo</a>
+(<a class="reference external" href="http://pubs.acs.org/doi/10.1021/acs.jcim.7b00249">文献</a>)-
+ケミカルトピックモデリング</li>
+<li><a class="reference external" href="https://github.com/rdkit/OCEAN">OCEAN</a>(<a class="reference external" href="http://pubs.acs.org/doi/abs/10.1021/acs.jcim.6b00067">文献</a>)-
+最適化交差反応性予測</li>
+<li><a class="reference external" href="https://github.com/mnowotka/chembl_beaker">ChEMBL Beaker</a> - RDKitとOSARのためのスタンドアローンウェブサーバーラッパー</li>
+<li><a class="reference external" href="https://github.com/chembl/mychembl">myChEMBL</a>
+(<a class="reference external" href="http://chembl.blogspot.de/2013/10/chembl-virtual-machine-aka-mychembl.html">ブログ記事</a>,
+<a class="reference external" href="http://bioinformatics.oxfordjournals.org/content/early/2013/11/20/bioinformatics.btt666">文献</a>
+) -ケモインフォマティクスツールとオープンデータの仮想マシンによる実装</li>
+<li><a class="reference external" href="http://zinc15.docking.org/">ZINC</a> -
+バーチャルスクリーニングのための購入可能な化合物の無料データベース</li>
+<li><a class="reference external" href="https://github.com/apahl/sdf_viewer">sdf_viewer.py</a> -
+インラタクティブなSDFビューワー</li>
+<li><a class="reference external" href="https://github.com/dkuhn/sdf2ppt">sdf2ppt</a> -
+Powerpoint/openofficeプレゼンテーションでSDFファイルの読み込みとイメージグリッドとして分子の表示を行う</li>
+<li><a class="reference external" href="https://github.com/admed/molgears">MolGears</a> -
+生理活性分子のためのケモインフォマティクスツール</li>
+<li><a class="reference external" href="http://www.biochemfusion.com/downloads/#OracleUtilities">PYPL</a> -
+Oracle PL/SQLからPythonスクリプトの呼び出しを可能にするシンプルなカートリッジ</li>
+<li><a class="reference external" href="https://github.com/jandom/shape-it-rdkit">shape-it-rdkit</a> -
+silicos itからRDKitバックエンドに移植されたガウス型の分子重ね合わせコード</li>
+<li><a class="reference external" href="http://wonka.sgc.ox.ac.uk/WONKA/">WONKA</a> -
+タンパク質-リガンド共結晶構造の解析と精査のためのツール</li>
+<li><a class="reference external" href="http://oommppaa.sgc.ox.ac.uk/OOMMPPAA/">OOMMPPAA</a> -
+タンパク質-リガンド共結晶構造に基づく指向性合成とデータ分析のためのツール</li>
+<li><a class="reference external" href="https://github.com/rdkit/OCEAN">OCEAN</a> -
+ChEMBLをデータソースとして用いて化学構造の標的を予測するためのツール</li>
+<li><a class="reference external" href="http://chemfp.com/">chemfp</a> - 非常に高速なフィンガープリント検索</li>
+<li><a class="reference external" href="https://github.com/apahl/rdkit_ipynb_tools">rdkit_ipynb_tools</a> -
+IPython NotebookのためのRDKitツール</li>
+<li><a class="reference external" href="https://www.knime.com/book/vernalis-nodes-for-knime-trusted-extension">Vernalis KNIME nodes</a></li>
+<li><a class="reference external" href="https://www.knime.com/community/erlwood">Erlwood KNIME nodes</a></li>
+<li><a class="reference external" href="https://github.com/AZcompTox/AZOrange">AZOrange</a></li>
+</ul>
+</div>
+<div class="section" id="contrib">
+<h2>Contribディレクトリ<a class="headerlink" href="#contrib" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Overview.html#the-contrib-directory">The Contrib Directory</a>]</p>
+<p>標準RDKitディストリビューションの一部である Contrib
+ディレクトリはコミュニティメンバーからのコントリビューションによるコードを含みます。</p>
+</div>
+<div class="section" id="id8">
+<h2>脚注<a class="headerlink" href="#id8" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Overview.html#footnotes">Footenotes</a>]</p>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="f1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id6">[1]</a></td><td>これらの実装は機能しますが、必ずしも最良、最速、あるいは最も完全であるとは限りません。</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id9">
+<h2>ライセンス<a class="headerlink" href="#id9" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>[<a class="reference external" href="https://www.rdkit.org/docs/Overview.html#license">License</a>]</p>
+<p>この文書の著作権は copyright (C) 2013-2018 by Greg Landrum
+に所属しています。</p>
+<p>この文書はCreative Commons Attribution-ShareAlike 4.0
+Licenseのもとでライセンスされています。このライセンスを見るためにはhttp://creativecommons.org/licenses/by-sa/4.0/
+にアクセスするか、Creative Commons, 543 Howard Street, 5th Floor, San
+Francisco, California, 94105, USA.　に手紙を送ってください。</p>
+<p>このライセンスの意図はRDKitそのものの意図と似ています。簡単に言えば
+“これを使ってなんでもやりたいことをやっていいですが、私たちの功績についても言及してください”</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Installation_jp.html" class="btn btn-neutral float-right" title="インストールの仕方" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="introduction_jp.html" class="btn btn-neutral" title="このサイトの使い方（日本語版序文）" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, anonymous
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'1.00',
+              LANGUAGE:'ja',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

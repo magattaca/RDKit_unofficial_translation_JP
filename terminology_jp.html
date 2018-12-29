@@ -1,0 +1,1113 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ja" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ja" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>訳語対応集 &mdash; RDKit_unofficial_translation_JP 1.00 ドキュメント</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="prev" title="「PythonでRDKitを始めよう」日本語版補遺" href="Supplementary_Text_jp.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> RDKit_unofficial_translation_JP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.00
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction_jp.html">このサイトの使い方（日本語版序文）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="An_overview_of_the_RDKit_jp.html">RDKitの概要</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation_jp.html">インストールの仕方</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Getting_Started_with_RDKit_in_Python_jp.html">PythonでRDKitを始めよう</a></li>
+<li class="toctree-l1"><a class="reference internal" href="The_RDKit_Book_jp.html">The RDKit Book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RDKit_cookbook_jp.html">RDKitクックブック</a></li>
+<li class="toctree-l1"><a class="reference internal" href="The_RDKit_database_cartridge_jp.html">RDKitデータベースカートリッジ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Backwards_incompatible_changes_jp.html">後方互換性の無い変更</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Supplementary_Text_jp.html">「PythonでRDKitを始めよう」日本語版補遺</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">訳語対応集</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">RDKit_unofficial_translation_JP</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>訳語対応集</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/terminology_jp.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>訳語対応集<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<p>このページでは翻訳にあたって使用した訳語の日英対応を記載します。
+日本語版作成にあたってできる限り理解しやすいよう努めましたが、専門用語の訳にあたって不適切な用語を使用している場合があります。
+訳語の日英対応を掲載する意図は下記です。</p>
+<ul class="simple">
+<li>不適切な訳語を用いている場合に備え元の英語表記を参照可能とする</li>
+<li>RDKitのモジュール、関数は専門用語を反映した名称がつけられていることが多いので、
+英語表記との対応を記載することでコードを参照する際の補助となると考えたため</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="32%" />
+<col width="63%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">&#160;</th>
+<th class="head">英語</th>
+<th class="head">日本語</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>数字</td>
+<td>2D pharmacophore fingerprint</td>
+<td>２Dファーマコフォアフィンガープリント</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>2D-pharmacophore machinery</td>
+<td>2Dファーマコフォア機能</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>3D distance matrix</td>
+<td>3D距離行列</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>3D geometry</td>
+<td>３次元の幾何構造</td>
+</tr>
+<tr class="row-even"><td>a</td>
+<td>a particular density of set bits</td>
+<td>特定のビット密度</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>adaptive modeling</td>
+<td>適合モデリング</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>aggregation function</td>
+<td>集合関数</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>align</td>
+<td>アラインメントを取る</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>argument</td>
+<td>引数</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>aromatic bond type</td>
+<td>芳香族の結合タイプ</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>aromaticity flag</td>
+<td>芳香族性フラグ</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>artificial example</td>
+<td>モデルケース</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>atom index</td>
+<td>アトムインデックス</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>atom map index</td>
+<td>アトムマップインデックス</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>atom map number property</td>
+<td>アトムマップナンバーのプロパティ</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>atom query</td>
+<td>アトムクエリ</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>atom weight</td>
+<td>原子の重み</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>atom-atom matching</td>
+<td>原子同士のマッチング</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>atom-pair fingerprint</td>
+<td>アトムペアフィンガープリント</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>atomic coordinate</td>
+<td>原子座標</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>attachment point</td>
+<td>接着点</td>
+</tr>
+<tr class="row-odd"><td>b</td>
+<td>backward compatibility</td>
+<td>後方互換性</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>bin</td>
+<td>ビン分割</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>binary string</td>
+<td>バイナリ列</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>binary string representation</td>
+<td>バイナリ列表現</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>binary value</td>
+<td>2進値、バイナリ値</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>bit ranking functionality</td>
+<td>ビットランキング機能</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>bit vector</td>
+<td>ビットベクトル</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>bit vector fingerprint</td>
+<td>ビットベクトルフィンガープリント</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>bit-vector</td>
+<td>ビットベクトル</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>bond type</td>
+<td>結合タイプ</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>boolean</td>
+<td>ブールの、ブール値</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>break compatibility</td>
+<td>互換性を破る</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>break down</td>
+<td>分類する</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>built-in functionality</td>
+<td>組み込みの機能</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>Butina clustering</td>
+<td>Butinaクラスタリング</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>bytea</td>
+<td>byteaデータ型　PostgreSQLにおけるバイナリ列を保存するデータ型</td>
+</tr>
+<tr class="row-odd"><td>c</td>
+<td>canonical orientation</td>
+<td>正規化された向き</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>chemical features</td>
+<td>化学的特徴</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>chemical reaction</td>
+<td>化学反応</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>chemical transoformation</td>
+<td>化学変換</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>chemical-feature invariant</td>
+<td>化学的特徴の不変量</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>Circular fingerprint</td>
+<td>Circularフィンガープリント</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>clean up</td>
+<td>クリーンアップ</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>color sheme</td>
+<td>カラースキーム、色彩設計</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>common template</td>
+<td>共通骨格</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>comparison function</td>
+<td>比較関数</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>completion</td>
+<td>補完</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>computational expediency</td>
+<td>計算の都合上</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>configuration</td>
+<td>構成、環境設定</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>configuration variable</td>
+<td>構成変数</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>conformation</td>
+<td>コンフォメーション、配座</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>connectivity descriptor</td>
+<td>結合関係記述子</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>connectivity information</td>
+<td>結合関係の情報</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>connectivity invariant</td>
+<td>結合関係の不変量</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>constructor</td>
+<td>コンストラクタ</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>convenience function</td>
+<td>簡易関数</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>core</td>
+<td>骨格</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>core function</td>
+<td>コア関数</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>CPU seconds</td>
+<td>CPU時間</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>Crippen contributionz</td>
+<td>Crippen寄与</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>crude force field</td>
+<td>粗い力場</td>
+</tr>
+<tr class="row-even"><td>d</td>
+<td>dative bond</td>
+<td>配位結合</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>degree query</td>
+<td>分岐数（級）</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>depiction</td>
+<td>描画</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>descriptor calculation</td>
+<td>記述子計算</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>deviation</td>
+<td>偏差</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>Dice similarity</td>
+<td>Dice類似度評価</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>Dice similarity</td>
+<td>Dice類似度</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>diameter of the atom environments considered</td>
+<td>考慮している原子の環境の直径</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>dictionary</td>
+<td>辞書型のデータ</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>directed synthesis</td>
+<td>指向性合成</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>distance bounds matrix</td>
+<td>距離拘束条件の行列</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>dummy atom</td>
+<td>ダミーアトム</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>dump</td>
+<td>メモリー内容を）ダンプする</td>
+</tr>
+<tr class="row-odd"><td>e</td>
+<td>ECFP family of fingerprint</td>
+<td>ECFPフィンガープリントファミリー</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>electron-contribution count</td>
+<td>電子の寄与のカウント</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>element-wise</td>
+<td>要素ごとの</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>embarrassingly parallel task</td>
+<td>驚異的並列タスク処理</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>embed</td>
+<td>埋め込み</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>encode</td>
+<td>符号化、コード化</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>encoding</td>
+<td>符号化、エンコーディング、コード化</td>
+</tr>
+<tr class="row-even"><td>f</td>
+<td>family of fingerprints</td>
+<td>一連のフィンガープリント</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>FCFP fingerprint</td>
+<td>FCFPフィンガープリント</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>feature</td>
+<td>フィーチャー</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>feature definition file format</td>
+<td>特徴定義ファイル形式</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>feature definition language</td>
+<td>フィーチャー定義言語</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>feature factory</td>
+<td>特徴工場、フィーチャーファクトリ</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>feature-based invariant</td>
+<td>特徴量ベースの不変量</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>feature-typing mechanism</td>
+<td>フィーチャータイプ化機能</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>fine-grained control</td>
+<td>高精細な調整</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>fingerprint I/O</td>
+<td>フィンガープリントの入出力</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>fingerprint similarity searching</td>
+<td>フィンガープリント類似性探索</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>fingerprinter</td>
+<td>フィンガープリント生成器</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>fingerprinting</td>
+<td>フィンガープリントの生成</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>flag prealigned</td>
+<td>prealignedフラグ</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>framework</td>
+<td>骨格</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>fused ring</td>
+<td>縮合環</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>Gasteiger partial charge</td>
+<td>Gasteiger部分電荷</td>
+</tr>
+<tr class="row-odd"><td>g</td>
+<td>Gaussian molecular overlap code</td>
+<td>ガウス型の分子重ね合わせコード</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>generator object</td>
+<td>ジェネレーターオブジェクト</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>generic function</td>
+<td>ジェネリック関数</td>
+</tr>
+<tr class="row-even"><td>h</td>
+<td>hashed molecular subgraph</td>
+<td>ハッシュ化された分子のサブグラフ</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>helper function</td>
+<td>ヘルパー関数</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>heteroatom neighbor query</td>
+<td>ヘテロ原子隣接クエリ</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>hybridization query</td>
+<td>混成クエリ</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>hydrogen atoms implicit</td>
+<td>水素原子を暗に扱う（明示しない）</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>hierarchy of transformations</td>
+<td>変換の階層構造</td>
+</tr>
+<tr class="row-even"><td>i</td>
+<td>image grid</td>
+<td>グリッドレイアウトの画像</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>implementation</td>
+<td>実装</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>inertia</td>
+<td>慣性</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>int argument</td>
+<td>整数の引数</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>Isotope label</td>
+<td>同位体ラベル</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>list comprehension syntax</td>
+<td>内包表記</td>
+</tr>
+<tr class="row-even"><td>m</td>
+<td>MACCS key</td>
+<td>MACCSキー</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>Magic Property Values</td>
+<td>マジックプロパティの値</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>Maximum Common Substructure</td>
+<td>最大共通部分構造</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>MCS code</td>
+<td>MCSコード</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>MDL aromaticity model</td>
+<td>MDL芳香属性モデル</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>MDL rxn files</td>
+<td>MDL rxnファイル</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>MMFF atom typing code</td>
+<td>MMFFの原子タイプを設定するコード</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>molecular database cartridge</td>
+<td>化合物データベース・カートリッジ</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>molecular fragment</td>
+<td>分子フラグメント</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>molecular graph</td>
+<td>分子グラフ構造</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>molecular operations</td>
+<td>分子の操作、取り扱い</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>molecular sanitization</td>
+<td>分子のサニタイゼーション</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>molecule I/O</td>
+<td>分子の入出力</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>Morgan algorithm</td>
+<td>Morganアルゴリズム</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>Morgan fingerprint</td>
+<td>Morganフィンガープリント</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>Murcko Decomposition</td>
+<td>Murcko型分解</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>Murcko-type Decomposition</td>
+<td>Murcko型分解</td>
+</tr>
+<tr class="row-odd"><td>n</td>
+<td>negate the vector</td>
+<td>ベクトルの符号を反転する</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>non-chemical functionality</td>
+<td>化学以外の機能</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>non-chiral query</td>
+<td>非キラルクエリ</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>normalization</td>
+<td>正規化、規格化</td>
+</tr>
+<tr class="row-odd"><td>o</td>
+<td>octet-complete Lewis dot structures</td>
+<td>オクテット則を完全に満たす様なルイス構造式</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>operator</td>
+<td>演算子</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>optimized cross reactivity estimation</td>
+<td>最適化交差反応性予測</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>overhead</td>
+<td>付帯的コスト</td>
+</tr>
+<tr class="row-odd"><td>p</td>
+<td>parallel conformation generation</td>
+<td>並列化したコンフォメーション生成</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>path size</td>
+<td>パス長</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>pharmacophore</td>
+<td>ファーマコフォア</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>picker</td>
+<td>ピッカー</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>pickling machinery</td>
+<td>pickle化機能</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>populate</td>
+<td>格納する</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>principal moment of inertia</td>
+<td>主慣性モーメント</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>public MACCS key</td>
+<td>公開されたMACCS キー</td>
+</tr>
+<tr class="row-odd"><td>q</td>
+<td>query</td>
+<td>クエリ</td>
+</tr>
+<tr class="row-even"><td>r</td>
+<td>random-access object</td>
+<td>ランダムアクセスオブジェクト</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>range query</td>
+<td>レンジクエリ</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>raw binary data</td>
+<td>生のバイナリデータ</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>RDKit database cartridge</td>
+<td>RDKitデータベースカートリッジ</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>reaction SMARTS</td>
+<td>reaction SMARTS</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>recursive SMARTS</td>
+<td>recursive SMARTS</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>reordering</td>
+<td>並べ替え</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>reparse</td>
+<td>再解析</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>ring system</td>
+<td>環系</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>rotatable bond</td>
+<td>回転可能な結合</td>
+</tr>
+<tr class="row-even"><td>s</td>
+<td>sanitize</td>
+<td>サニタイズ、サニタイゼーションを行う</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>scaffold</td>
+<td>骨格</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>semantics</td>
+<td>セマンティクス（意味、意図）</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>shape comparison</td>
+<td>形状比較</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>shape protrude distance</td>
+<td>形状はみ出し距離</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>shape Tanimoto distance</td>
+<td>形状タニモト距離</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>shebang</td>
+<td>シバン（UNIXのスクリプトの#!から始まる1行目のこと）</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>shorthand</td>
+<td>簡略表記法</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>sidechain</td>
+<td>側鎖</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>signature (fingerprint) factory</td>
+<td>シグネチャー（フィンガープリント）ファクトリ</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>similarity cutoff</td>
+<td>類似度のカットオフ</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>similarity map</td>
+<td>類似度マップ</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>similarity metric</td>
+<td>類似性指標</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>similarity metric</td>
+<td>類似度の指標</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>similarity score</td>
+<td>類似性スコア</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>simple aromaticity model</td>
+<td>単純芳香族性モデル</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>SMARTS pattern</td>
+<td>SMRTS パターン（SMARTS言語 (SMiles ARbitrary Target Specification) は、パターン記述言語)</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>SMARTS string</td>
+<td>SMARTS 文字列</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>SMARTS-based language</td>
+<td>SMARTSベースの記法</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>SMARTS-based query</td>
+<td>SMARTSベースのクエリ</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>SMILES string</td>
+<td>SMILES文字列</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>space of bits</td>
+<td>ビット空間</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>sparse count vector fingerprint</td>
+<td>スパースカウントベクトルフィンガープリント</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>sparse manner</td>
+<td>スパースな形式</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>sparsely</td>
+<td>まばらな、低密度の、スパースな</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>store</td>
+<td>格納する</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>submolecule</td>
+<td>擬似分子</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>substructure match</td>
+<td>部分構造のマッチング</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>substructure matching</td>
+<td>部分構造の一致検索</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>substructure operation</td>
+<td>部分構造操作</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>substructure quey</td>
+<td>部分構造クエリ</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>substructure searching</td>
+<td>部分構造探索</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>substructure-based transformations</td>
+<td>部分構造ベースの変換</td>
+</tr>
+<tr class="row-odd"><td>t</td>
+<td>Tanimoto similarity</td>
+<td>Tanimoto係数による類似性評価</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>Tanimoto similarity</td>
+<td>タニモト類似度</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>target on-bit density</td>
+<td>オンとなっているビット密度の目標値</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>timing information</td>
+<td>タイミング情報、時間情報</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>TL;DR</td>
+<td>要約（too long didn&#8217;t read（長すぎたから読まなかった）の略語)</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>tooltip</td>
+<td>ツールチップ</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>topologial path</td>
+<td>トポロジカルパス</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>topological distance</td>
+<td>幾何学的距離</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>Topological Fingerprint</td>
+<td>トポロジカルフィンガープリント</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>topological torsion descriptor</td>
+<td>トポロジカルトーション記述子</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>torsion angle preference</td>
+<td>優先される二面角の傾向</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>torsional angle</td>
+<td>二面角</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>TPSA descriptor</td>
+<td>TPSA記述子</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>triangle-bounds smoothing algorithm</td>
+<td>三角拘束スムージングアルゴリズム</td>
+</tr>
+<tr class="row-odd"><td>u</td>
+<td>unfolded fingerprint</td>
+<td>分散したフィンガープリント (畳み込まれていない（スパースな）フィンガープリント)</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>unique integer</td>
+<td>一意の整数値</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>unique products</td>
+<td>単一の生成物</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>unsigned integer</td>
+<td>符号なし整数</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>user-supplied atom invariants</td>
+<td>ユーザー定義のアトム不変量</td>
+</tr>
+<tr class="row-even"><td>v</td>
+<td>valence</td>
+<td>原子価</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>verbiage</td>
+<td>冗長な方法</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>visualization of descriptors</td>
+<td>記述子の可視化</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>volume</td>
+<td>体積</td>
+</tr>
+<tr class="row-even"><td>w</td>
+<td>wall-clock senconds</td>
+<td>実時間</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="Supplementary_Text_jp.html" class="btn btn-neutral" title="「PythonでRDKitを始めよう」日本語版補遺" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, anonymous
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'1.00',
+              LANGUAGE:'ja',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
